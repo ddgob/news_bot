@@ -45,9 +45,20 @@ class LATimesScraper:
         self.click_search_button()
         self.search_frase()
 
+    def select_newest_articles(self):
+        try:
+            dropdown_xpath = '//select[@name="s"]'
+            self.browser.wait_until_page_contains_element(dropdown_xpath)
+            dropdown = self.browser.find_element(dropdown_xpath)
+            self.browser.select_from_list_by_label(dropdown, "Newest")
+            print('Newest articles selected')
+        except Exception as e:
+            print(f"An error occurred when selecting the newest articles: {e}")
+
     def run(self):
         self.open_webiste()
         self.search_phrase()
+        self.select_newest_articles()
         self.close_browser()
 
 if __name__ == '__main__':
