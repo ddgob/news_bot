@@ -2,8 +2,9 @@ from RPA.Browser.Selenium import Selenium
 
 class LATimesScraper:
 
-    def __init__(self):
+    def __init__(self, phrase):
         self.browser = Selenium()
+        self.phrase = phrase
 
     def close_browser(self):
         try:
@@ -19,10 +20,36 @@ class LATimesScraper:
         except Exception as e:
             print(f"An error occurred opening the website: {e}")
 
+    def click_search_button(self):
+        try:
+            search_button_xpath = '//*[@data-element="search-button"]'
+            self.browser.wait_until_page_contains_element(search_button_xpath)
+            search_button = self.browser.find_element(search_button_xpath)
+            self.browser.click_element(search_button, "ENTER")
+            print('Search button clicked')
+        except Exception as e:
+            print(f"An error occurred when clicking search button: {e}")
+
+    def search_frase(self):
+        try:
+            search_bar_xpath = '//input[@data-element="search-form-input"]'
+            self.browser.wait_until_page_contains_element(search_bar_xpath)
+            search_bar = self.browser.find_element(search_bar_xpath)
+            self.browser.input_text(search_bar, self.phrase)
+            self.browser.press_keys(search_bar, "ENTER")
+            print('Phrase searched')
+        except Exception as e:
+            print(f"An error occurred when searching for phrase: {e}")
+
+    def search_phrase(self):
+        self.click_search_button()
+        self.search_frase()
+
     def run(self):
         self.open_webiste()
+        self.search_phrase()
         self.close_browser()
 
 if __name__ == '__main__':
-    scraper = LATimesScraper()
+    scraper = LATimesScraper('Covid')
     scraper.run()
