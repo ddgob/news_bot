@@ -3,15 +3,18 @@ from urllib.parse import urlparse, parse_qs
 import re
 from RPA.Browser.Selenium import Selenium
 from RPA.Excel.Files import Files
+from RPA.HTTP import HTTP
 
 class LATimesScraper:
 
-    def __init__(self, phrase, excel_path):
+    def __init__(self, phrase, excel_path, images_directory_path):
         self.browser = Selenium()
         self.phrase = phrase
         self.news_data = []
         self.excel = Files()
         self.excel_path = excel_path
+        self.http = HTTP()
+        self.images_directory_path = images_directory_path
 
     def close_browser(self):
         try:
@@ -61,12 +64,12 @@ class LATimesScraper:
             print('Newest articles selected')
         except Exception as e:
             print(f'An error occurred when selecting the newest articles: {e}')
-
+            
     def get_articles(self):
         try:
             time.sleep(10)
-            article_list_xpath = 'xpath:/html/body/div[2]/ps-search-results-module/form/div[2]/ps-search-filters/div/main/ul/li'
-            self.browser.wait_until_page_contains_element('xpath:/html/body/div[2]/ps-search-results-module/form/div[2]/ps-search-filters/div/main/ul')
+            article_list_xpath = 'xpath:/html/body/div[3]/ps-search-results-module/form/div[2]/ps-search-filters/div/main/ul/li'
+            self.browser.wait_until_page_contains_element('xpath:/html/body/div[3]/ps-search-results-module/form/div[2]/ps-search-filters/div/main/ul')
             articles = self.browser.find_elements(article_list_xpath)
             print('Got articles')
 
@@ -81,7 +84,7 @@ class LATimesScraper:
         if image_url:
             # Extract the file name
             file_name = image_url.split('/')[-1]
-            return file_name
+            return file_name, image_url
         return None
 
     def is_phrase_in_article(self, title, description):
@@ -97,8 +100,14 @@ class LATimesScraper:
         if match_title or match_description:
             contains_money = True
         return contains_money
+    
+    def download_image(self, url, path_image_file):
+        try:
+            self.http.download(url, path_image_file)
+        except Exception as e:
+            print(f'An error occurred when downloading article image: {e}')
 
-    def extract_article_values(self):
+    def extract_article_values_and_image(self):
         try:
             articles = self.get_articles()
             print('----------- Start Article Log -----------')
@@ -108,7 +117,7 @@ class LATimesScraper:
                 description = self.browser.find_element('xpath:.//ps-promo/div/div[2]/p[1]', parent=article).text
                 date = self.browser.find_element('xpath:.//ps-promo/div/div[2]/p[2]', parent=article).text
                 image_src = self.browser.find_element('xpath:.//ps-promo/div/div[1]/a/picture/img', parent=article).get_attribute('src')
-                image_filename = self.extract_image_filename(image_src)
+                image_filename, image_url = self.extract_image_filename(image_src)
                 total_phrase_count = self.is_phrase_in_article(title, description)
                 contains_money = self.is_money_in_article(title, description)
                 # Log extracted values
@@ -129,6 +138,8 @@ class LATimesScraper:
                     "count_phrases": total_phrase_count,
                     "contains_money": contains_money
                 })
+                # Download article image
+                self.download_image(image_url, f'{self.images_directory_path}/{image_filename}')
             print('----------- End Article Log -----------')
         except Exception as e:
             print(f'An error occurred when extracting article values: {e}')
@@ -149,13 +160,13 @@ class LATimesScraper:
         self.search_phrase()
         print('Selecting newest articles...')
         self.select_newest_articles()
-        print('Extracting article values...')
-        self.extract_article_values()
+        print('Extracting article values and image...')
+        self.extract_article_values_and_image()
         print('Storing article values in excel...')
         self.store_article_values_in_excel()
         print('Closing browser...')
         self.close_browser()
 
 if __name__ == '__main__':
-    scraper = LATimesScraper('Dollar', 'excel_file.xlsx')
+    scraper = LATimesScraper('Dollar', 'excel_file.xlsx', 'article_images')
     scraper.run()
