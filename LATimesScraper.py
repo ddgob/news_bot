@@ -2,13 +2,16 @@ import time
 from urllib.parse import urlparse, parse_qs
 import re
 from RPA.Browser.Selenium import Selenium
+from RPA.Excel.Files import Files
 
 class LATimesScraper:
 
-    def __init__(self, phrase):
+    def __init__(self, phrase, excel_path):
         self.browser = Selenium()
         self.phrase = phrase
         self.news_data = []
+        self.excel = Files()
+        self.excel_path = excel_path
 
     def close_browser(self):
         try:
@@ -130,6 +133,15 @@ class LATimesScraper:
         except Exception as e:
             print(f'An error occurred when extracting article values: {e}')
 
+    def store_article_values_in_excel(self):
+        worksheet_name = f'News search results for {self.phrase}'
+        self.excel.create_workbook(self.excel_path, sheet_name=worksheet_name)
+        self.excel.append_rows_to_worksheet([
+            ["Title", "Date", "Description", "Picture Filename", "Count of Phrases", "Contains Money"]
+        ], worksheet_name)
+        self.excel.append_rows_to_worksheet(self.news_data, name=worksheet_name)
+        self.excel.save_workbook()
+
     def run(self):
         print('Opening website...')
         self.open_webiste()
@@ -139,9 +151,11 @@ class LATimesScraper:
         self.select_newest_articles()
         print('Extracting article values...')
         self.extract_article_values()
+        print('Storing article values in excel...')
+        self.store_article_values_in_excel()
         print('Closing browser...')
         self.close_browser()
 
 if __name__ == '__main__':
-    scraper = LATimesScraper('Dollar')
+    scraper = LATimesScraper('Dollar', 'excel_file.xlsx')
     scraper.run()
