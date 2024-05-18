@@ -2,22 +2,68 @@ import time
 from urllib.parse import urlparse, parse_qs
 import re
 from datetime import datetime, timedelta
+import logging
+import warnings
 from RPA.Browser.Selenium import Selenium
 from RPA.Excel.Files import Files
 from RPA.HTTP import HTTP
 
+class Logger:
+    
+    _instance = None
+
+    def __new__(cls, log_dir):
+        if cls._instance is None:
+            cls._instance = super(Logger, cls).__new__(cls)
+            cls._instance._initialize_logger(log_dir)
+        return cls._instance
+    
+    def _initialize_logger(self, log_dir):
+        self.logger = logging.getLogger('LATimesScraperLogger')
+        self.logger.setLevel(logging.DEBUG)
+        handler = logging.FileHandler(f'{log_dir}/LATimesScraper_{datetime.now().strftime("%Y%m%d%H%M%S")}.log')
+        handler.setLevel(logging.DEBUG)
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        handler.setFormatter(formatter)
+        self.logger.addHandler(handler)
+        # Redirect warnings to the logger
+        logging.captureWarnings(True)
+        warn_handler = logging.StreamHandler()
+        warn_handler.setLevel(logging.WARNING)
+        warn_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        warn_handler.setFormatter(warn_formatter)
+        self.logger.addHandler(warn_handler)
+
+        def warn_with_logger(message, category, filename, lineno, file=None, line=None):
+            self.logger.warning(warnings.formatwarning(message, category, filename, lineno, line))
+
+        warnings.showwarning = warn_with_logger
+
+    def log(self, level, message):
+        if level == 'debug':
+            self.logger.debug(message)
+        elif level == 'info':
+            self.logger.info(message)
+        elif level == 'warning':
+            self.logger.warning(message)
+        elif level == 'error':
+            self.logger.error(message)
+        elif level == 'critical':
+            self.logger.critical(message)
+
 class LATimesScraper:
 
-    def __init__(self, phrase, excel_path, images_directory_path, start_date, end_date):
+    def __init__(self, phrase, excel_files_dir, article_images_dir, log_dir, start_date, end_date):
         self.browser = Selenium()
         self.phrase = phrase
         self.news_data = []
         self.excel = Files()
-        self.excel_path = excel_path
+        self.excel_files_dir = excel_files_dir
         self.http = HTTP()
-        self.images_directory_path = images_directory_path
+        self.article_images_dir = article_images_dir
+        self.logger = Logger(log_dir).log
         # Start date should include entire day
-        self.start_date = self.convert_date_to_datetime(start_date) + timedelta(hours=24)
+        self.start_date = self.convert_date_to_datetime(start_date) + timedelta(hours=23, minutes=59, seconds=59)
         self.end_date = self.convert_date_to_datetime(end_date)
         self.ensure_end_date_earlier_than_start_date()
 
@@ -27,45 +73,52 @@ class LATimesScraper:
 
     def close_browser(self):
         try:
+            self.logger('info', 'Closing browser...')
             self.browser.close_all_browsers()
-            print('Browser closed')
+            self.logger('info', 'Finished closing browser')
         except Exception as e:
-            print(f'An error occurred closing the browser: {e}')
+            self.logger('error', f'An error occurred while closing the browser: {e}')
     
     def open_webiste(self):
         try:
+            self.logger('info', 'Opening website...')
             self.browser.open_available_browser('https://www.latimes.com/')
-            print('Website opened')
+            self.logger('info', 'Finished opening website')
         except Exception as e:
-            print(f'An error occurred opening the website: {e}')
+            self.logger('error', f'An error occurred while opening the website: {e}')
 
     def search_phrase(self):
-        self.browser.click_element_when_clickable("//*[@data-element='search-button']")
-        self.browser.input_text_when_element_is_visible("//input[@data-element='search-form-input']", self.phrase)
-        self.browser.click_element_when_clickable("//*[@data-element='search-submit-button']")
-        print('Phrase searched')
+        try:
+            self.logger('info', 'Searching phrase...')
+            self.browser.click_element_when_clickable("//*[@data-element='search-button']", timeout=30)
+            self.browser.input_text_when_element_is_visible("//input[@data-element='search-form-input']", self.phrase)
+            self.browser.click_element_when_clickable("//*[@data-element='search-submit-button']", timeout=30)
+            self.logger('info', 'Finished searching phrase')
+        except Exception as e:
+            self.logger('error', f'An error occurred while searching phrase: {e}')
 
     def select_newest_articles(self):
         try:
+            self.logger('info', 'Selecting newest articles...')
             dropdown_xpath = "//select[@name='s']"
-            self.browser.wait_until_element_is_visible(dropdown_xpath)
+            self.browser.wait_until_element_is_visible(dropdown_xpath, timeout=30)
             self.browser.select_from_list_by_label(dropdown_xpath, 'Newest')
-            self.browser.wait_until_element_is_visible(dropdown_xpath)
-            print('Newest articles selected')
+            self.browser.wait_until_element_is_not_visible('class:search-results-module-results-menu', timeout=30)
+            self.logger('info', 'Finished selecting newest articles')
         except Exception as e:
-            print(f'An error occurred when selecting the newest articles: {e}')
+            self.logger('error', f'An error occurred while selecting the newest articles: {e}')
             
-    def get_articles_from_current_page(self):
+    def get_articles_from_current_page(self, page_number):
         try:
-            print('Getting articles from current page')
+            self.logger('info', f'Getting articles from page {page_number}...')
             article_list_class = 'class:search-results-module-results-menu'
-            self.browser.wait_until_element_is_visible(article_list_class)
+            self.browser.wait_until_element_is_visible(article_list_class, timeout=30)
             article_list = self.browser.find_element(article_list_class)
             articles = self.browser.find_elements('tag:li', parent=article_list)
-            print('Got articles')
+            self.logger('info', f'Finished getting articles from page {page_number}')
             return articles
         except Exception as e:
-            print(f'An error occurred when getting articles from current page: {e}')
+            self.logger('error', f'An error occurred when getting articles from page {page_number}: {e}')
             return []
 
     def extract_image_filename(self, img_src):
@@ -73,7 +126,6 @@ class LATimesScraper:
         query_params = parse_qs(parsed_url.query)
         image_url = query_params.get('url', [None])[0]
         if image_url:
-            # Extract the file name
             file_name = image_url.split('/')[-1]
             return file_name, image_url
         return None
@@ -92,11 +144,13 @@ class LATimesScraper:
             contains_money = True
         return contains_money
     
-    def download_article_image(self, url, path_image_file):
+    def download_article_image(self, url, image_filename, article_number, page_number):
         try:
-            self.http.download(url, path_image_file)
+            self.logger('info', f'Downloading image in article {article_number} from page {page_number}: {image_filename}')
+            self.http.download(url, f"{self.article_images_dir}/{image_filename}")
+            self.logger('info', f'Finished downloading image in article {article_number} from page {page_number}: {image_filename}')
         except Exception as e:
-            print(f'An error occurred when downloading article image: {e}')
+            self.logger('error', f'An error occurred while downloading article image: {e}')
 
     def convert_date_to_datetime(self, date):
         current_time = datetime.now()
@@ -124,7 +178,6 @@ class LATimesScraper:
         
     def scrape_article_values(self, article, article_number, page_number):
         try:
-            print(f'Scraping values in article {article_number} from page {page_number}...')
             title = self.browser.find_element('class:promo-title', parent=article).text
             description = self.browser.find_element('class:promo-description', parent=article).text
             unconverted_date = self.browser.find_element('class:promo-timestamp', parent=article).text
@@ -135,18 +188,18 @@ class LATimesScraper:
             contains_money = self.is_money_in_article(title, description)
             article_values = {
                 'title': title,
-                'description': description,
                 'date': date,
+                'description': description,
                 'image_filename': image_filename,
                 'total_phrase_count': total_phrase_count,
                 'contains_money': contains_money
             }
-            print(f'Scraped values in article {article_number} from page {page_number}')
             return article_values, image_url
         except Exception as e:
-            print(f'An error occurred when extracting article values: {e}')
+            self.logger('error', f'An error occurred while scraping values in article {article_number} from page {page_number}: {e}')
     
-    def log_article_values(self, article_values, article_number, page_number):
+    def print_article_values(self, article_values, article_number, page_number):
+        print('---')
         print(f'Page number: {page_number}')
         print(f'Article number: {article_number}')
         print(f"Title: {article_values['title']}")
@@ -157,19 +210,28 @@ class LATimesScraper:
         print(f"If title or description contain money amount: {article_values['contains_money']}")
         print('---')
 
-    def scrape_valid_articles(self):
+    def navigate_to_next_page(self, page_number):
         try:
+            self.logger('info', f'Moving from page {page_number} to page {page_number+1}...')
+            next_button_locator = f"css:a[href*='https://www.latimes.com/search?q={self.phrase}&s=1&p={page_number+2}']"
+            self.browser.click_element_when_clickable(next_button_locator, timeout=30)
+            self.logger('info', f'Finished moving from page {page_number} to page {page_number+1}')
+        except Exception as e:
+            self.logger('error', f'An error occurred while moving from page {page_number} to page {page_number+1}: {e}')
+
+    def scrape_all_valid_articles(self):
+        try:
+            self.logger('info', 'Scraping all valid articles...')
             page_number = 0
-            print('----------- Start Article Log -----------')
             is_article_earlier_than_end_date = False
             # Iterates through pages, stops when finds 
             # article that is earlier than end date
             while True:
-                articles = self.get_articles_from_current_page()
+                articles = self.get_articles_from_current_page(page_number)
+                self.logger('info', f'Scraping valid articles from page {page_number}...')
                 # Iterates through articles in the current page
                 for article_number, article in enumerate(articles):
                     article_values, image_url = self.scrape_article_values(article, article_number, page_number)
-                    print(f'Verifying if article {article_number} from page {page_number} is valid')
                     # Breaks if article is after valid date range
                     if article_values['date'] < self.end_date:
                         is_article_earlier_than_end_date = True
@@ -177,52 +239,45 @@ class LATimesScraper:
                     # Skips articles that are before valid date range
                     if article_values['date'] > self.start_date:
                         continue
-                    print(f'Verified article {article_number} from page {page_number} as valid')
+                    # Convert date back to string type (to be visible in excel)
+                    article_values['date'] = article_values['date'].strftime('%m/%d/%Y')
                     # Store article values
                     self.news_data.append(article_values)
-                    self.log_article_values(article_values, article_number, page_number)
-                    #self.download_article_image(image_url, f"{self.images_directory_path}/{article_values['image_filename']}")
+                    #self.print_article_values(article_values, article_number, page_number)
+                    #self.download_article_image(image_url, article_values['image_filename'], article_number, page_number)
+                self.logger('info', f'Finished scraping valid articles from page {page_number}')
                 if is_article_earlier_than_end_date:
                     break
-                # Click on button to go to the next page of articles
-                next_button_locator = f"css:a[href*='https://www.latimes.com/search?q={self.phrase}&s=1&p={page_number+2}']"
-                self.browser.click_element_when_clickable(next_button_locator)
-                time.sleep(10)
+                self.navigate_to_next_page(page_number)
                 page_number += 1
-            print('----------- End Article Log -----------')
-            print('All valid articles scraped')
+            self.logger('info', 'Finished scraping all valid articles')
         except Exception as e:
-            print(f'An error occurred when extracting article content: {e}')
+            self.logger('error', f'An error occurred while scraping all valid articles: {e}')
 
     def store_article_values_in_excel(self):
         try:
+            self.logger('info', 'Storing article values in excel...')
             formatted_start_date = self.start_date.strftime('%m-%d-%Y')
             formatted_end_date = self.end_date.strftime('%m-%d-%Y')
             worksheet_name = f'News search results for {self.phrase} from {formatted_start_date} to {formatted_end_date}'
-            self.excel.create_workbook(self.excel_path, sheet_name=worksheet_name)
+            self.excel.create_workbook(f'{self.excel_files_dir}/{datetime.now()}.xlsx', sheet_name=worksheet_name)
             self.excel.append_rows_to_worksheet([
                 ["Title", "Date", "Description", "Picture Filename", "Count of Phrases", "Contains Money"]
             ], worksheet_name)
             self.excel.append_rows_to_worksheet(self.news_data, name=worksheet_name)
             self.excel.save_workbook()
+            self.logger('info', 'Finished storing article values in excel')
         except Exception as e:
-            print(f'An error occurred when storing article values in excel: {e}')
+            self.logger('error', f'An error occurred while storing article values in excel: {e}')
 
     def run(self):
-        print('Opening website...')
         self.open_webiste()
-        print('Searching phrase...')
         self.search_phrase()
-        print('Selecting newest articles...')
         self.select_newest_articles()
-        time.sleep(1)
-        print('Scraping valid articles...')
-        self.scrape_valid_articles()
-        print('Storing article values in excel...')
+        self.scrape_all_valid_articles()
         self.store_article_values_in_excel()
-        print('Closing browser...')
-        self.close_browser()
+        self.browser.close_browser()
 
 if __name__ == '__main__':
-    scraper = LATimesScraper('Dollar', 'excel_file.xlsx', 'article_images', '05/17/2024', '05/16/2024')
+    scraper = LATimesScraper('Dollar', 'excel_files', 'article_images', 'logs', '05/16/2024', '05/16/2024')
     scraper.run()
