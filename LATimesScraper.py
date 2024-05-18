@@ -261,7 +261,7 @@ class LATimesScraper:
             self.logger('info', 'Storing article values in excel...')
             formatted_start_date = self.start_date.strftime('%m-%d-%Y')
             formatted_end_date = self.end_date.strftime('%m-%d-%Y')
-            worksheet_name = f'News search results for {self.phrase} from {formatted_start_date} to {formatted_end_date}'
+            worksheet_name = f'{self.phrase}_{formatted_start_date}-{formatted_end_date}'
             self.excel.create_workbook(f'{self.excel_files_dir}/{datetime.now()}.xlsx', sheet_name=worksheet_name)
             self.excel.append_rows_to_worksheet([
                 ["Title", "Date", "Description", "Picture Filename", "Count of Phrases", "Contains Money"]
