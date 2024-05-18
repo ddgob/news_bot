@@ -19,13 +19,11 @@ class LATimesScraper:
         # Start date should include entire day
         self.start_date = self.convert_date_to_datetime(start_date) + timedelta(hours=24)
         self.end_date = self.convert_date_to_datetime(end_date)
-        self.verify_end_date_earlier_than_start_date()
+        self.ensure_end_date_earlier_than_start_date()
 
-    def verify_end_date_earlier_than_start_date(self):
+    def ensure_end_date_earlier_than_start_date(self):
         if self.start_date < self.end_date:
-            temp_start_date = self.start_date
-            self.start_date = self.end_date
-            self.end_date = temp_start_date
+            self.start_date, self.end_date = self.end_date, self.start_date
 
     def close_browser(self):
         try:
@@ -37,55 +35,37 @@ class LATimesScraper:
     def open_webiste(self):
         try:
             self.browser.open_available_browser('https://www.latimes.com/')
-            print('Website succesfully opened')
+            print('Website opened')
         except Exception as e:
             print(f'An error occurred opening the website: {e}')
 
-    def click_search_button(self):
-        try:
-            search_button_xpath = "//*[@data-element='search-button']"
-            self.browser.wait_until_page_contains_element(search_button_xpath)
-            search_button = self.browser.find_element(search_button_xpath)
-            self.browser.click_element(search_button, 'ENTER')
-            print('Search button clicked')
-        except Exception as e:
-            print(f'An error occurred when clicking search button: {e}')
-
-    def search_frase(self):
-        try:
-            search_bar_xpath = "//input[@data-element='search-form-input']"
-            self.browser.wait_until_page_contains_element(search_bar_xpath)
-            search_bar = self.browser.find_element(search_bar_xpath)
-            self.browser.input_text(search_bar, self.phrase)
-            self.browser.press_keys(search_bar, 'ENTER')
-            print('Phrase searched')
-        except Exception as e:
-            print(f'An error occurred when searching for phrase: {e}')
-
     def search_phrase(self):
-        self.click_search_button()
-        self.search_frase()
+        self.browser.click_element_when_clickable("//*[@data-element='search-button']")
+        self.browser.input_text_when_element_is_visible("//input[@data-element='search-form-input']", self.phrase)
+        self.browser.click_element_when_clickable("//*[@data-element='search-submit-button']")
+        print('Phrase searched')
 
     def select_newest_articles(self):
         try:
             dropdown_xpath = "//select[@name='s']"
-            self.browser.wait_until_page_contains_element(dropdown_xpath)
-            dropdown = self.browser.find_element(dropdown_xpath)
-            self.browser.select_from_list_by_label(dropdown, 'Newest')
+            self.browser.wait_until_element_is_visible(dropdown_xpath)
+            self.browser.select_from_list_by_label(dropdown_xpath, 'Newest')
+            self.browser.wait_until_element_is_visible(dropdown_xpath)
             print('Newest articles selected')
         except Exception as e:
             print(f'An error occurred when selecting the newest articles: {e}')
             
-    def get_articles_for_current_page(self):
+    def get_articles_from_current_page(self):
         try:
-            time.sleep(10)
-            article_list_xpath = 'xpath:/html/body/div[2]/ps-search-results-module/form/div[2]/ps-search-filters/div/main/ul/li'
-            self.browser.wait_until_page_contains_element('xpath:/html/body/div[2]/ps-search-results-module/form/div[2]/ps-search-filters/div/main/ul')
-            articles = self.browser.find_elements(article_list_xpath)
+            print('Getting articles from current page')
+            article_list_class = 'class:search-results-module-results-menu'
+            self.browser.wait_until_element_is_visible(article_list_class)
+            article_list = self.browser.find_element(article_list_class)
+            articles = self.browser.find_elements('tag:li', parent=article_list)
             print('Got articles')
             return articles
         except Exception as e:
-            print(f'An error occurred when getting article: {e}')
+            print(f'An error occurred when getting articles from current page: {e}')
             return []
 
     def extract_image_filename(self, img_src):
@@ -122,8 +102,8 @@ class LATimesScraper:
         current_time = datetime.now()
         # Pattern that matches MM/YY/YYYY
         input_date_regex_pattern = r'^(0?[1-9]|1[0-2])\/(0?[1-9]|[12][0-9]|3[01])\/[0-9]{4}$'
-        # Pattern that matches <Month> DD,YYYY
-        article_date_regex_pattern = r'^[A-Za-z]+ [0-9]{1,2}, [0-9]{4}$'
+        # Pattern that matches <Month>. DD,YYYY
+        article_date_regex_pattern = r'^[A-Za-z]+. [0-9]{1,2}, [0-9]{4}$'
         # Pattern that matches minute, minutes hour or hours
         minutes_ago_regex_pattern = re.compile(r'(\d+)\s+minutes?\s+ago')
         # Pattern that matches hour or hours
@@ -132,7 +112,7 @@ class LATimesScraper:
         if re.search(input_date_regex_pattern, date):
             return datetime.strptime(date, '%m/%d/%Y')
         elif re.search(article_date_regex_pattern, date):
-            return datetime.strptime(date, '%B %d, %Y')
+            return datetime.strptime(date.replace('.', ''), '%b %d, %Y')
         elif hours_match := hours_ago_regex_pattern.match(date):
             hours = int(hours_match.group(1))
             return current_time - timedelta(hours=hours)
@@ -142,13 +122,14 @@ class LATimesScraper:
         else:
             raise ValueError('Date pattern not recognized')
         
-    def extract_article_values(self, article):
+    def scrape_article_values(self, article, article_number, page_number):
         try:
-            title = self.browser.find_element('xpath:.//ps-promo/div/div[2]/div/h3/a', parent=article).text
-            description = self.browser.find_element('xpath:.//ps-promo/div/div[2]/p[1]', parent=article).text
-            unconverted_date = self.browser.find_element('xpath:.//ps-promo/div/div[2]/p[2]', parent=article).text
+            print(f'Scraping values in article {article_number} from page {page_number}...')
+            title = self.browser.find_element('class:promo-title', parent=article).text
+            description = self.browser.find_element('class:promo-description', parent=article).text
+            unconverted_date = self.browser.find_element('class:promo-timestamp', parent=article).text
             date = self.convert_date_to_datetime(unconverted_date)
-            image_src = self.browser.find_element('xpath:.//ps-promo/div/div[1]/a/picture/img', parent=article).get_attribute('src')
+            image_src = self.browser.find_element('class:image', parent=article).get_attribute('src')
             image_filename, image_url = self.extract_image_filename(image_src)
             total_phrase_count = self.is_phrase_in_article(title, description)
             contains_money = self.is_money_in_article(title, description)
@@ -160,6 +141,7 @@ class LATimesScraper:
                 'total_phrase_count': total_phrase_count,
                 'contains_money': contains_money
             }
+            print(f'Scraped values in article {article_number} from page {page_number}')
             return article_values, image_url
         except Exception as e:
             print(f'An error occurred when extracting article values: {e}')
@@ -175,7 +157,7 @@ class LATimesScraper:
         print(f"If title or description contain money amount: {article_values['contains_money']}")
         print('---')
 
-    def extract_content_in_articles(self):
+    def scrape_valid_articles(self):
         try:
             page_number = 0
             print('----------- Start Article Log -----------')
@@ -183,10 +165,11 @@ class LATimesScraper:
             # Iterates through pages, stops when finds 
             # article that is earlier than end date
             while True:
-                articles = self.get_articles_for_current_page()
+                articles = self.get_articles_from_current_page()
                 # Iterates through articles in the current page
                 for article_number, article in enumerate(articles):
-                    article_values, image_url = self.extract_article_values(article)
+                    article_values, image_url = self.scrape_article_values(article, article_number, page_number)
+                    print(f'Verifying if article {article_number} from page {page_number} is valid')
                     # Breaks if article is after valid date range
                     if article_values['date'] < self.end_date:
                         is_article_earlier_than_end_date = True
@@ -194,18 +177,20 @@ class LATimesScraper:
                     # Skips articles that are before valid date range
                     if article_values['date'] > self.start_date:
                         continue
+                    print(f'Verified article {article_number} from page {page_number} as valid')
                     # Store article values
                     self.news_data.append(article_values)
                     self.log_article_values(article_values, article_number, page_number)
-                    self.download_article_image(image_url, f"{self.images_directory_path}/{article_values['image_filename']}")
+                    #self.download_article_image(image_url, f"{self.images_directory_path}/{article_values['image_filename']}")
                 if is_article_earlier_than_end_date:
                     break
                 # Click on button to go to the next page of articles
-                next_button_xpath = 'xpath:/html/body/div[2]/ps-search-results-module/form/div[2]/ps-search-filters/div/main/div[2]/div[3]/a'
-                self.browser.click_element_when_clickable(next_button_xpath)
+                next_button_locator = f"css:a[href*='https://www.latimes.com/search?q={self.phrase}&s=1&p={page_number+2}']"
+                self.browser.click_element_when_clickable(next_button_locator)
                 time.sleep(10)
                 page_number += 1
             print('----------- End Article Log -----------')
+            print('All valid articles scraped')
         except Exception as e:
             print(f'An error occurred when extracting article content: {e}')
 
@@ -230,8 +215,9 @@ class LATimesScraper:
         self.search_phrase()
         print('Selecting newest articles...')
         self.select_newest_articles()
-        print('Extracting article values and image...')
-        self.extract_content_in_articles()
+        time.sleep(1)
+        print('Scraping valid articles...')
+        self.scrape_valid_articles()
         print('Storing article values in excel...')
         self.store_article_values_in_excel()
         print('Closing browser...')
