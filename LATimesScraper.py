@@ -198,6 +198,7 @@ class LATimesScraper:
             return article_values, image_url
         except Exception as e:
             self.logger('error', f'An error occurred while scraping values in article {article_number} from page {page_number}: {e}')
+            return None, None
     
     def print_article_values(self, article_values, article_number, page_number):
         print('---')
@@ -245,7 +246,7 @@ class LATimesScraper:
                     # Store article values
                     self.news_data.append(article_values)
                     #self.print_article_values(article_values, article_number, page_number)
-                    self.download_article_image(image_url, article_values['image_filename'], article_number, page_number)
+                    #self.download_article_image(image_url, article_values['image_filename'], article_number, page_number)
                 self.logger('info', f'Finished scraping valid articles from page {page_number}')
                 if is_article_earlier_than_end_date:
                     break
