@@ -103,7 +103,8 @@ class LATimesScraper:
             dropdown_xpath = "//select[@name='s']"
             self.browser.wait_until_element_is_visible(dropdown_xpath, timeout=30)
             self.browser.select_from_list_by_label(dropdown_xpath, 'Newest')
-            self.browser.wait_until_element_is_not_visible('class:search-results-module-results-menu', timeout=30)
+            # Wait for the newest articles to load
+            self.browser.wait_until_element_is_not_visible('class:search-results-module-results-menu', timeout=1)
             self.logger('info', 'Finished selecting newest articles')
         except Exception as e:
             self.logger('error', f'An error occurred while selecting the newest articles: {e}')
@@ -244,7 +245,7 @@ class LATimesScraper:
                     # Store article values
                     self.news_data.append(article_values)
                     #self.print_article_values(article_values, article_number, page_number)
-                    #self.download_article_image(image_url, article_values['image_filename'], article_number, page_number)
+                    self.download_article_image(image_url, article_values['image_filename'], article_number, page_number)
                 self.logger('info', f'Finished scraping valid articles from page {page_number}')
                 if is_article_earlier_than_end_date:
                     break
