@@ -5,6 +5,7 @@ from RPA.Browser.Selenium import Selenium
 from RPA.Excel.Files import Files
 from RPA.HTTP import HTTP
 from .logger import Logger
+from .la_times_browser_handler import LATimesBrowserHandler
 
 class LATimesScraper:
 
@@ -33,14 +34,6 @@ class LATimesScraper:
             self.logger('info', 'Finished closing browser')
         except Exception as e:
             self.logger('error', f'An error occurred while closing the browser: {e}')
-    
-    def open_webiste(self):
-        try:
-            self.logger('info', 'Opening website...')
-            self.browser.open_available_browser('https://www.latimes.com/')
-            self.logger('info', 'Finished opening website')
-        except Exception as e:
-            self.logger('error', f'An error occurred while opening the website: {e}')
 
     def search_phrase(self):
         try:
@@ -230,7 +223,8 @@ class LATimesScraper:
             self.logger('error', f'An error occurred while storing article values in excel: {e}')
 
     def run(self):
-        self.open_webiste()
+        la_times_browser_handler = LATimesBrowserHandler(self.browser, self.logger)
+        la_times_browser_handler.open_website()
         self.search_phrase()
         self.select_newest_articles()
         self.scrape_all_valid_articles()
