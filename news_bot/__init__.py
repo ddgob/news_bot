@@ -1,3 +1,3 @@
-from .LATimesScraper import LATimesScraper
+from .la_times_scraper import LATimesScraper
 
-__all__ = ['LATimesScraper']
+__all__ = ['la_times_scraper']
