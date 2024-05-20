@@ -164,3 +164,7 @@ cython_debug/
 mypy.ini
 
 *.sh
+
+.vscode
+
+_venv
