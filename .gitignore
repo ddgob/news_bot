@@ -166,5 +166,3 @@ mypy.ini
 *.sh
 
 .vscode
-
-_venv
