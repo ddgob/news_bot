@@ -225,7 +225,7 @@ class LATimesScraper:
     def run(self):
         la_times_browser_handler = LATimesBrowserHandler(self.browser, self.logger)
         la_times_browser_handler.open_website()
-        self.search_phrase()
+        la_times_browser_handler.search(self.phrase)
         self.select_newest_articles()
         self.scrape_all_valid_articles()
         self.store_article_values_in_excel()
