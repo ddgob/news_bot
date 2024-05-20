@@ -214,12 +214,14 @@ class LATimesScraper:
 
     def navigate_to_next_page(self, page_number):
         try:
-            self.logger('info', f'Moving from page {page_number} to page {page_number+1}...')
-            next_button_locator = f"css:a[href*='https://www.latimes.com/search?q={self.phrase}&s=1&p={page_number+2}']"
-            self.browser.click_element_when_clickable(next_button_locator, timeout=30)
-            self.logger('info', f'Finished moving from page {page_number} to page {page_number+1}')
+            next_page_div_class = 'class:search-results-module-next-page'
+            self.browser.wait_until_element_is_visible(next_page_div_class, timeout=30)
+            next_page_div = self.browser.find_element(next_page_div_class)
+            next_page_button = self.browser.find_element('tag:a', parent=next_page_div)
+            self.browser.click_element_when_clickable(next_page_button, timeout=30)
         except Exception as e:
-            self.logger('error', f'An error occurred while moving from page {page_number} to page {page_number+1}: {e}')
+            self.logger('critical', f'A critical error occurred while moving from page {page_number+1} to page {page_number+2}: {e}')
+            raise
 
     def scrape_all_valid_articles(self):
         try:
