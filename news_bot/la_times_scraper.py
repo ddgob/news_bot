@@ -34,28 +34,6 @@ class LATimesScraper:
             self.logger('info', 'Finished closing browser')
         except Exception as e:
             self.logger('error', f'An error occurred while closing the browser: {e}')
-
-    def search_phrase(self):
-        try:
-            self.logger('info', 'Searching phrase...')
-            self.browser.click_element_when_clickable("//*[@data-element='search-button']", timeout=30)
-            self.browser.input_text_when_element_is_visible("//input[@data-element='search-form-input']", self.phrase)
-            self.browser.click_element_when_clickable("//*[@data-element='search-submit-button']", timeout=30)
-            self.logger('info', 'Finished searching phrase')
-        except Exception as e:
-            self.logger('error', f'An error occurred while searching phrase: {e}')
-
-    def select_newest_articles(self):
-        try:
-            self.logger('info', 'Selecting newest articles...')
-            dropdown_xpath = "//select[@name='s']"
-            self.browser.wait_until_element_is_visible(dropdown_xpath, timeout=30)
-            self.browser.select_from_list_by_label(dropdown_xpath, 'Newest')
-            # Wait for the newest articles to load
-            self.browser.wait_until_element_is_not_visible('class:search-results-module-results-menu', timeout=1)
-            self.logger('info', 'Finished selecting newest articles')
-        except Exception as e:
-            self.logger('error', f'An error occurred while selecting the newest articles: {e}')
             
     def get_articles_from_current_page(self, page_number):
         try:
@@ -226,7 +204,7 @@ class LATimesScraper:
         la_times_browser_handler = LATimesBrowserHandler(self.browser, self.logger)
         la_times_browser_handler.open_website()
         la_times_browser_handler.search(self.phrase)
-        self.select_newest_articles()
+        la_times_browser_handler.select_newest_articles()
         self.scrape_all_valid_articles()
         self.store_article_values_in_excel()
         self.browser.close_browser()

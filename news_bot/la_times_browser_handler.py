@@ -29,3 +29,16 @@ class LATimesBrowserHandler:
             self.__logger('info', f'Finished searching phrase {phrase}')
         except Exception as e:
             self.__logger('error', f'An error occurred while searching phrase {phrase}: {e}')
+
+    def select_newest_articles(self) -> None:
+        try:
+            self.__logger('info', 'Selecting newest articles...')
+            order_articles_dropdown_locator: str = "//select[@name='s']"
+            self.__handler.wait_until_element_is_visible(order_articles_dropdown_locator, timeout=30)
+            self.__handler.select_from_list_by_label(order_articles_dropdown_locator, 'Newest')
+            # Wait for the newest articles to load
+            articles_section_locator: str = 'class:search-results-module-results-menu'
+            self.__logger('info', 'Finished selecting newest articles')
+            self.__handler.wait_until_element_is_not_visible(articles_section_locator, timeout=1)
+        except Exception as e:
+            self.__logger('error', f'An error occurred while selecting the newest articles: {e}')
