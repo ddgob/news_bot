@@ -6,6 +6,7 @@ from RPA.Excel.Files import Files
 from RPA.HTTP import HTTP
 from .logger import Logger
 from .la_times_browser_handler import LATimesBrowserHandler
+from .la_times_article_scraper import LATimesArticleScraper
 
 class LATimesScraper:
     def __init__(self, phrase, excel_files_dir, article_images_dir, start_date, end_date):
@@ -18,13 +19,17 @@ class LATimesScraper:
         self.article_images_dir = article_images_dir
         self.logger = Logger().log
         # Start date should include entire day
-        self.start_date = self.convert_date_to_datetime(start_date) + timedelta(hours=23, minutes=59, seconds=59)
+        self.start_date = self.convert_date_to_datetime(start_date)
         self.end_date = self.convert_date_to_datetime(end_date)
-        self.ensure_end_date_earlier_than_start_date()
+        self.ensure_start_date_earlier_than_end_date()
+        self.ensure_whole_day_end_date()
 
-    def ensure_end_date_earlier_than_start_date(self):
-        if self.start_date < self.end_date:
+    def ensure_start_date_earlier_than_end_date(self):
+        if self.end_date < self.start_date:
             self.start_date, self.end_date = self.end_date, self.start_date
+    
+    def ensure_whole_day_end_date(self):
+        self.end_date += timedelta(hours=23, minutes=59, seconds=59, milliseconds=59)
 
     def close_browser(self):
         try:
@@ -200,10 +205,15 @@ class LATimesScraper:
             self.logger('error', f'An error occurred while storing article values in excel: {e}')
 
     def run(self):
-        la_times_browser_handler = LATimesBrowserHandler(self.browser, self.logger)
+        la_times_browser_handler = LATimesBrowserHandler(self.browser)
         la_times_browser_handler.open_website()
         la_times_browser_handler.search(self.phrase)
         la_times_browser_handler.select_newest_articles()
-        self.scrape_all_valid_articles()
+        la_times_scraper = LATimesArticleScraper()
+        articles = la_times_scraper.scrape_search_articles_within_date_range(
+            self.start_date, self.end_date, self.phrase, self.browser
+            )
+        self.news_data = articles.convert_to_list_of_dict()
+        #self.scrape_all_valid_articles()
         self.store_article_values_in_excel()
         self.browser.close_browser()
