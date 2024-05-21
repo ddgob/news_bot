@@ -8,8 +8,7 @@ from .logger import Logger
 from .la_times_browser_handler import LATimesBrowserHandler
 
 class LATimesScraper:
-
-    def __init__(self, phrase, excel_files_dir, article_images_dir, log_dir, start_date, end_date):
+    def __init__(self, phrase, excel_files_dir, article_images_dir, start_date, end_date):
         self.browser = Selenium()
         self.phrase = phrase
         self.news_data = []
@@ -17,7 +16,7 @@ class LATimesScraper:
         self.excel_files_dir = excel_files_dir
         self.http = HTTP()
         self.article_images_dir = article_images_dir
-        self.logger = Logger(log_dir).log
+        self.logger = Logger().log
         # Start date should include entire day
         self.start_date = self.convert_date_to_datetime(start_date) + timedelta(hours=23, minutes=59, seconds=59)
         self.end_date = self.convert_date_to_datetime(end_date)
