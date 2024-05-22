@@ -3,25 +3,27 @@ from .articles.article_list import SearchArticleList
 from .la_times_browser_handler import LATimesBrowserHandler
 from .logger import Logger
 from typing import Any
+from .news_website_article_scraper import NewsWebsiteArticleScraper
+from .news_website_browser_handler import NewsWebsiteBrowserHandler
 
 
-class LATimesArticleScraper:
+class LATimesArticleScraper(NewsWebsiteArticleScraper):
     def __init__(self) -> None:
         self.__log = Logger().log
 
     def scrape_search_articles_within_date_range(
             self, start_date: datetime, end_date: datetime, search_phrase: str, 
-            handler: LATimesBrowserHandler) -> SearchArticleList:
+            browser_handler: NewsWebsiteBrowserHandler) -> SearchArticleList:
         try:
-            browser_handler: LATimesBrowserHandler = LATimesBrowserHandler(
-                handler
+            la_times_browser_handler: LATimesBrowserHandler = LATimesBrowserHandler(
+                browser_handler._get_handler()
                 )
             articles_within_date_range: SearchArticleList = SearchArticleList(
                 search_phrase
             )
             page_number: int = 1
             while True:
-                articles: SearchArticleList = browser_handler.get_articles(
+                articles: SearchArticleList = la_times_browser_handler.get_articles(
                     search_phrase, page_number
                     )
                 valid_articles: SearchArticleList = articles.filter_articles_within_date_range(
@@ -30,7 +32,7 @@ class LATimesArticleScraper:
                 articles_within_date_range.extend(valid_articles)
                 if articles.is_all_articles_before_date(start_date):
                     break
-                if not browser_handler.move_to_next_article_page(page_number):
+                if not la_times_browser_handler.move_to_next_article_page(page_number):
                     break
                 page_number += 1
             return articles_within_date_range
