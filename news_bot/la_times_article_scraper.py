@@ -4,16 +4,18 @@ from .la_times_browser_handler import LATimesBrowserHandler
 from .logger import Logger
 from typing import Any
 from .news_website_article_scraper import NewsWebsiteArticleScraper
-from .news_website_browser_handler import NewsWebsiteBrowserHandler
+from .news_website_browser_service import NewsWebsiteBrowserService
 
 
 class LATimesArticleScraper(NewsWebsiteArticleScraper):
     def __init__(self) -> None:
         self.__log = Logger().log
 
-    def scrape_search_articles_within_date_range(
-            self, start_date: datetime, end_date: datetime, search_phrase: str, 
-            browser_handler: NewsWebsiteBrowserHandler) -> SearchArticleList:
+    def scrape_search_articles_within_date_range(self, start_date: datetime, 
+                                                 end_date: datetime, 
+                                                 search_phrase: str, 
+                                                 browser_handler: NewsWebsiteBrowserService
+                                                 ) -> SearchArticleList:
         try:
             la_times_browser_handler: LATimesBrowserHandler = LATimesBrowserHandler(
                 browser_handler._get_handler()
