@@ -39,7 +39,6 @@ class SearchArticleList(ArticleList):
             search_article = SearchArticle.from_article(article, 
                                                         self.__search_phrase
                                                         )
-            search_article.convert_to_dict()
             list_of_dict.append(search_article.convert_to_dict())
         return list_of_dict
     
