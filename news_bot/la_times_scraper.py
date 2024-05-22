@@ -15,6 +15,7 @@ from .news_website_article_scraper import NewsWebsiteArticleScraper
 from .news_website_browser_handler_factory import NewsWebsiteBrowserHandlerFactory
 from .news_website_article_scraper_factory import NewsWebsiteArticleScraperFactory
 from .news_website_browser_service import NewsWebsiteBrowserService
+from .news_website_scraper_service import NewsWebsiteScraperService
 
 class LATimesScraper:
     def __init__(self, phrase, excel_files_dir, article_images_dir, start_date, end_date):
@@ -219,10 +220,10 @@ class LATimesScraper:
         news_website_browser_service.open_website()
         news_website_browser_service.search(self.phrase)
         news_website_browser_service.select_newest_articles()
-        news_website_article_scraper: NewsWebsiteArticleScraper = NewsWebsiteArticleScraperFactory.create(
+        news_website_scraper_service: NewsWebsiteScraperService = NewsWebsiteScraperService(
             'https://www.latimes.com/'
-        )
-        articles = news_website_article_scraper.scrape_search_articles_within_date_range(
+            )
+        articles = news_website_scraper_service.scrape_search_articles_within_date_range(
             self.start_date, self.end_date, self.phrase, news_website_browser_service
             )
         news_website_browser_service.close_browser()
