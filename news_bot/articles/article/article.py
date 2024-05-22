@@ -36,11 +36,13 @@ class Article:
                          end_date: datetime) -> bool:
         return start_date <= self.__date <= end_date
     
-    def get_image_file_name(self) -> str:
+    def get_image_url(self) -> str:
         url_handler: URLHandler = URLHandler()
-        image_url = url_handler.get_image_url(self.__image_src)
-        image_file_name = image_url.split('/')[-1]
-        return image_file_name
+        return url_handler.get_image_url(self.__image_src)
+    
+    def get_image_file_name(self) -> str:
+        image_url = self.get_image_url()
+        return image_url.split('/')[-1]
     
     def is_contain_money_in_text(self) -> bool:
         money_regex_pattern = (
