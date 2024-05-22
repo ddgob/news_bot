@@ -61,7 +61,7 @@ class NewsBot:
                 f'{end_date} for search phrase: {search_phrase}'
                 )
             image_downloader = ImageDownloader()
-            #image_downloader.download_images(articles, images_dir)
+            image_downloader.download_images(articles, images_dir)
             return True
         except Exception as e:
             self.__log(
