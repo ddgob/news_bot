@@ -1,6 +1,6 @@
 from datetime import datetime
 from .articles.article_list import SearchArticleList
-from .la_times_browser_handler import LATimesBrowserHandler
+from .news_website_browser_service import LATimesBrowserHandler
 from .logger import Logger
 from typing import Any
 from .news_website_article_scraper import NewsWebsiteArticleScraper
