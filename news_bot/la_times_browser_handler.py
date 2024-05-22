@@ -73,6 +73,8 @@ class LATimesBrowserHandler(NewsWebsiteBrowserHandler):
                 articles_section_locator, timeout=1
                 )
         except Exception as e:
+            if 'still visible after' in str(e):
+                return
             self.__log(
                 'error', 
                 f'An error occurred while selecting the newest articles: {e}'
