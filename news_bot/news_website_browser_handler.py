@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from RPA.Browser.Selenium import Selenium
 
 class NewsWebsiteBrowserHandler(ABC):
     @abstractmethod
@@ -14,4 +15,7 @@ class NewsWebsiteBrowserHandler(ABC):
         pass
 
     def close_browser(self) -> None:
+        pass
+
+    def _get_handler(self) -> Selenium:
         pass

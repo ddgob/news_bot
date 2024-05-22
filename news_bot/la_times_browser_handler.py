@@ -221,4 +221,7 @@ class LATimesBrowserHandler(NewsWebsiteBrowserHandler):
             )
             self.__log('error', error_message)
             raise
+    
+    def _get_handler(self) -> Selenium:
+        return self.__handler
 
