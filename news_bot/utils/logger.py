@@ -5,15 +5,33 @@ import warnings
 from news_bot import config
 
 class Logger:
+    """
+    Singleton class for logging messages in the news bot application.
+    
+    This class sets up a logger that writes logs to a file and captures 
+    warnings.
+    """
+
     __instance = None
 
     def __new__(cls):
+        """
+        Create a new instance of Logger if it does not already exist.
+
+        Returns:
+            Logger: The singleton instance of the Logger class.
+        """
         if cls.__instance is None:
             cls.__instance = super(Logger, cls).__new__(cls)
             cls.__instance._initialize_logger()
         return cls.__instance
     
     def _initialize_logger(self):
+        """
+        Initialize the logger instance.
+
+        Sets up the file handler, formatter, and warning capture.
+        """
         self.logger = logging.getLogger('news_bot_logger')
         self.logger.setLevel(logging.DEBUG)
         handler = logging.FileHandler(
@@ -38,12 +56,36 @@ class Logger:
 
         def warn_with_logger(message, category, filename, lineno, file=None, 
                              line=None):
+            """
+            Log warnings with the logger.
+
+            Args:
+                message: The warning message.
+                category: The category of the warning.
+                filename: The name of the file where the warning 
+                occurred.
+                lineno: The line number where the warning occurred.
+                file: The file object (default: None).
+                line: The line of code where the warning occurred 
+                (default: None).
+            """
             self.logger.warning(warnings.formatwarning(message, category, 
                                                        filename, lineno, line))
 
         warnings.showwarning = warn_with_logger
 
     def log(self, level, message):
+        """
+        Log a message at the specified log level.
+
+        Args:
+            level (str): The log level ('debug', 'info', 'warning', 
+            'error', 'critical').
+            message (str): The message to log.
+
+        Raises:
+            ValueError: If the log level is not recognized.
+        """
         if level == 'debug':
             self.logger.debug(message)
         elif level == 'info':
