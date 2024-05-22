@@ -9,13 +9,13 @@ class LATimesArticleScraper:
     def __init__(self) -> None:
         self.__log = Logger().log
 
-    def scrape_search_articles_within_date_range(self, start_date: datetime, 
-                                                  end_date: datetime, 
-                                                  search_phrase: str,
-                                                  handler: LATimesBrowserHandler
-                                                  ) -> SearchArticleList:
+    def scrape_search_articles_within_date_range(
+            self, start_date: datetime, end_date: datetime, search_phrase: str, 
+            handler: LATimesBrowserHandler) -> SearchArticleList:
         try:
-            browser_handler: LATimesBrowserHandler = LATimesBrowserHandler(handler)
+            browser_handler: LATimesBrowserHandler = LATimesBrowserHandler(
+                handler
+                )
             articles_within_date_range: SearchArticleList = SearchArticleList(
                 search_phrase
             )
