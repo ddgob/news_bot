@@ -89,3 +89,16 @@ class DateHandler:
             elif separator == '-':
                 format_string = '%m-%d-%Y'
         return date_obj.strftime(format_string)
+    
+    def first_date_earlier_than_second(self, first_date: str, 
+                                       second_date: str):
+        first_date = self.convert_date_to_datetime(first_date)
+        second_date = self.convert_date_to_datetime(second_date)
+        if second_date < first_date:
+            first_date, second_date = second_date, first_date
+        return first_date, second_date
+
+    
+    def make_until_end_of_day(self, date: datetime):
+        date += timedelta(hours=23, minutes=59, seconds=59, milliseconds=59)
+        return date
