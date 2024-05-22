@@ -215,7 +215,7 @@ class LATimesScraper:
             self.start_date, self.end_date, self.phrase, self.browser
             )
         self.browser.close_browser()
-        self.news_data = articles.convert_to_list_of_dict()
+        self.news_data = articles.convert_to_list_of_dicts()
         self.store_article_values_in_excel()
         image_downloader: ImageDownloader = ImageDownloader()
         image_downloader.download_images(articles, self.article_images_dir)
