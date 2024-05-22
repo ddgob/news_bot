@@ -1,5 +1,5 @@
 import argparse
-from news_bot import LATimesScraper, config
+from news_bot import NewsBot, config
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="LATimesScraper Command Line Arguments")
@@ -11,11 +11,9 @@ if __name__ == '__main__':
     parser.add_argument('-ed', '--end_date', type=str, required=True, help='End date (MM/DD/YYYY)')
     args = parser.parse_args()
     config.LOG_FILE_DIR = args.log_dir
-    scraper = LATimesScraper(
-        phrase=args.search_phrase, 
-        excel_files_dir=args.excel_dir, 
-        article_images_dir=args.image_dir, 
-        start_date=args.start_date, 
-        end_date=args.end_date
-    )
-    scraper.run()
+    news_bot = NewsBot()
+    news_bot.scrape_articles_by_date_range('https://www.latimes.com/', 
+                                           args.search_phrase, args.start_date, 
+                                           args.end_date, args.excel_dir, 
+                                           args.image_dir
+                                           )
