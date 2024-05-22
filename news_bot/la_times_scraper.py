@@ -14,6 +14,7 @@ from .news_website_browser_handler import NewsWebsiteBrowserHandler
 from .news_website_article_scraper import NewsWebsiteArticleScraper
 from .news_website_browser_handler_factory import NewsWebsiteBrowserHandlerFactory
 from .news_website_article_scraper_factory import NewsWebsiteArticleScraperFactory
+from .news_website_browser_service import NewsWebsiteBrowserService
 
 class LATimesScraper:
     def __init__(self, phrase, excel_files_dir, article_images_dir, start_date, end_date):
@@ -212,20 +213,19 @@ class LATimesScraper:
             self.logger('error', f'An error occurred while storing article values in excel: {e}')
 
     def run(self):
-        news_website_browser_handler: NewsWebsiteBrowserHandler = NewsWebsiteBrowserHandlerFactory.create(
+        news_website_browser_service: NewsWebsiteBrowserService = NewsWebsiteBrowserService(
             'https://www.latimes.com/'
             )
-        news_website_browser_handler.open_website()
-        news_website_browser_handler.search(self.phrase)
-        news_website_browser_handler.select_newest_articles()
-        la_times_article_scraper = LATimesArticleScraper()
+        news_website_browser_service.open_website()
+        news_website_browser_service.search(self.phrase)
+        news_website_browser_service.select_newest_articles()
         news_website_article_scraper: NewsWebsiteArticleScraper = NewsWebsiteArticleScraperFactory.create(
             'https://www.latimes.com/'
         )
         articles = news_website_article_scraper.scrape_search_articles_within_date_range(
-            self.start_date, self.end_date, self.phrase, news_website_browser_handler
+            self.start_date, self.end_date, self.phrase, news_website_browser_service
             )
-        news_website_browser_handler.close_browser()
+        news_website_browser_service.close_browser()
         list_of_dict_articles = articles.convert_to_list_of_dicts()
         date_handler = DateHandler()        
         formatted_start_date = date_handler.convert_datetime_to_string(
