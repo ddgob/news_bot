@@ -47,19 +47,18 @@ def validate_date(date_str: str):
         date: datetime = datetime.strptime(date_str, "%m/%d/%Y")
         return (date, is_valid)
     except ValueError:
-        is_valid: bool = False
+        is_valid = False
         print(f"Invalid date format: '{date_str}'. Use MM/DD/YYYY.")
         return (None, is_valid)
 
-def validate_directory(dir_str: str) -> tuple[str, bool]:
+def validate_directory(dir_str: str):
     if not os.path.isdir(dir_str) or dir_str == '':
         print(f"Directory does not exist: '{dir_str}'.")
         return None, False
     if not os.access(dir_str, os.W_OK):
         print(f"Directory is not writable: '{dir_str}'.")
         return None, False
-    is_valid: bool = True
-    return (dir_str, is_valid)
+    return (dir_str, True)
 
 def prompt_for_invalid_args(args) -> None:
     if args.search_phrase is None:
@@ -72,28 +71,34 @@ def prompt_for_invalid_args(args) -> None:
             else:
                 print("Let's try again")
     if args.excel_dir is None or not args.excel_dir[1]:
-        is_valid: bool = False
+        is_valid = False
         while not is_valid:
             args.excel_dir, is_valid = validate_directory(
                 input('Enter directory where the Excel file should be '
                       'stored: ')
                 )
+    else:
+        args.excel_dir = args.excel_dir[0]
     if args.image_dir is None or not args.image_dir[1]:
-        is_valid: bool = False
+        is_valid = False
         while not is_valid:
             args.image_dir, is_valid = validate_directory(
                 input('Enter directory where the article images should be '
                       'stored: ')
                 )
+    else:
+        args.image_dir = args.image_dir[0]
     if args.log_dir is None or not args.log_dir[1]:
-        is_valid: bool = False
+        is_valid = False
         while not is_valid:
             args.log_dir, is_valid = validate_directory(
                 input('Enter directory where the log file for the program '
                       'execution should be stored: ')
                 )
+    else:
+        args.log_dir = args.log_dir[0]
     if args.start_date is None or not args.start_date[1]:
-        is_valid: bool = False
+        is_valid = False
         while not is_valid:
             args.start_date, is_valid = validate_date(
                 input('Enter start date (MM/DD/YYYY): ')
@@ -102,8 +107,10 @@ def prompt_for_invalid_args(args) -> None:
                 print(("Use a date in the format that the example 11/23/2024 "
                        "uses")
                        )
+    else:
+        args.start_date = args.start_date[0]
     if args.end_date is None or not args.end_date[1]:
-        is_valid: bool = False
+        is_valid = False
         while not is_valid:
             args.end_date, is_valid = validate_date(
                 input('Enter end date (MM/DD/YYYY): ')
@@ -112,6 +119,8 @@ def prompt_for_invalid_args(args) -> None:
                 print(("Use a date in the format that the example 11/23/2024 "
                        "uses")
                        )
+    else:
+        args.end_date = args.end_date[0]
 
 def main():
     parser = argparse.ArgumentParser(
