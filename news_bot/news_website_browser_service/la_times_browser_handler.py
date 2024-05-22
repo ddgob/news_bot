@@ -1,10 +1,12 @@
+from datetime import datetime
+from typing import Any
+
 from RPA.Browser.Selenium import Selenium
+
 from ..utils import Logger
 from ..articles.article_list import SearchArticleList
 from ..articles.article import Article, SearchArticle
 from ..utils import DateHandler
-from datetime import datetime
-from typing import Any
 from .news_website_browser_handler import NewsWebsiteBrowserHandler
 
 class LATimesBrowserHandler(NewsWebsiteBrowserHandler):

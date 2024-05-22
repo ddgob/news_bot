@@ -1,6 +1,7 @@
 import argparse
 import os
 from datetime import datetime
+
 from news_bot import NewsBot, config
 
 def validate_date(date_str: str):

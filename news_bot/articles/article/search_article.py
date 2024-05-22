@@ -1,5 +1,6 @@
-from . import Article
 from datetime import datetime
+
+from news_bot.articles.article import Article
 from ...utils import DateHandler
 
 

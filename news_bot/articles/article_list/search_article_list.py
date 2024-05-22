@@ -1,7 +1,8 @@
-from . import ArticleList
+from datetime import datetime
+
+from news_bot.articles.article_list import ArticleList
 from ..article import Article
 from ..article import SearchArticle
-from datetime import datetime
 
 class SearchArticleList(ArticleList):
     def __init__(self, search_phrase: str) -> None:

@@ -1,5 +1,6 @@
-from ..article import Article
 from datetime import datetime
+
+from ..article import Article
 
 
 class ArticleList:

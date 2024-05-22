@@ -1,7 +1,8 @@
-from datetime import datetime
-from ...utils import URLHandler
-import re
 from typing import Any
+import re
+from datetime import datetime
+
+from ...utils import URLHandler
 
 
 class Article:

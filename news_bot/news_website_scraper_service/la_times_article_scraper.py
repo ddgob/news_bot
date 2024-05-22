@@ -1,8 +1,8 @@
 from datetime import datetime
+
 from ..articles.article_list import SearchArticleList
 from ..news_website_browser_service import LATimesBrowserHandler
 from ..utils import Logger
-from typing import Any
 from .news_website_article_scraper import NewsWebsiteArticleScraper
 from ..news_website_browser_service import NewsWebsiteBrowserService
 

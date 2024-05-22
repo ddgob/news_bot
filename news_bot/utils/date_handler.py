@@ -1,7 +1,7 @@
-from .logger import Logger
 from datetime import datetime, timedelta
 import re
-from typing import Any
+
+from .logger import Logger
 
 
 class DateHandler:

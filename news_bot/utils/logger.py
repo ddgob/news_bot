@@ -1,7 +1,8 @@
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime
 import warnings
-from .. import config
+
+from news_bot import config
 
 class Logger:
     __instance = None
