@@ -16,6 +16,7 @@ from .news_website_browser_handler_factory import NewsWebsiteBrowserHandlerFacto
 from .news_website_article_scraper_factory import NewsWebsiteArticleScraperFactory
 from .news_website_browser_service import NewsWebsiteBrowserService
 from .news_website_scraper_service import NewsWebsiteScraperService
+from .excel_search_article_list_service import ExcelSearchArticleListService
 
 class LATimesScraper:
     def __init__(self, phrase, excel_files_dir, article_images_dir, start_date, end_date):
@@ -227,7 +228,7 @@ class LATimesScraper:
             self.start_date, self.end_date, self.phrase, news_website_browser_service
             )
         news_website_browser_service.close_browser()
-        list_of_dict_articles = articles.convert_to_list_of_dicts()
+        excel_search_article_list_service: ExcelSearchArticleListService = ExcelSearchArticleListService()
         date_handler = DateHandler()        
         formatted_start_date = date_handler.convert_datetime_to_string(
             self.start_date, separator='-'
@@ -235,12 +236,11 @@ class LATimesScraper:
         formatted_end_date = date_handler.convert_datetime_to_string(
             self.end_date, separator='-'
             )
-        excel_handler = ExcelHandler()
         worksheet_name = (
             f'{self.phrase}_{formatted_start_date}-{formatted_end_date}'
         )
-        excel_handler.convert_list_of_dicts_to_excel_file(
-            list_of_dict_articles, self.excel_files_dir, worksheet_name
+        excel_search_article_list_service.save_search_article_list_to_excel_file(
+            articles, self.excel_files_dir, worksheet_name
             )
         #image_downloader: ImageDownloader = ImageDownloader()
         #image_downloader.download_images(articles, self.article_images_dir)
