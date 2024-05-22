@@ -45,6 +45,8 @@ cd news_bot
 ./setup.sh
 ```
 
+OBS: make sure to give `setup.sh` permission to run. If you can't or prefer not to, make sure to use the requirements denoted in conda.yaml
+
 ## Usage
 
 After running the setup script, the News Bot will be ready to fetch news articles based on the arguments you pass it. 
