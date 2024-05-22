@@ -4,19 +4,19 @@ from datetime import datetime, timedelta
 from RPA.Browser.Selenium import Selenium
 from RPA.Excel.Files import Files
 from RPA.HTTP import HTTP
-from .logger import Logger
-from .la_times_browser_handler import LATimesBrowserHandler
-from .la_times_article_scraper import LATimesArticleScraper
-from .image_downloader import ImageDownloader
-from .excel_handler import ExcelHandler
-from .date_handler import DateHandler
-from .news_website_browser_handler import NewsWebsiteBrowserHandler
-from .news_website_article_scraper import NewsWebsiteArticleScraper
+from .utils.logger import Logger
+from .news_website_browser_service import LATimesBrowserHandler
+from .news_website_scraper_service.la_times_article_scraper import LATimesArticleScraper
+from .utils.image_downloader import ImageDownloader
+from .excel_service.excel_handler import ExcelHandler
+from .utils import DateHandler
+from .news_website_browser_service.news_website_browser_handler import NewsWebsiteBrowserHandler
+from .news_website_scraper_service.news_website_article_scraper import NewsWebsiteArticleScraper
 from .news_website_browser_service.news_website_browser_handler_factory import NewsWebsiteBrowserHandlerFactory
-from .news_website_article_scraper_factory import NewsWebsiteArticleScraperFactory
+from .news_website_scraper_service.news_website_article_scraper_factory import NewsWebsiteArticleScraperFactory
 from .news_website_browser_service import NewsWebsiteBrowserService
 from .news_website_scraper_service import NewsWebsiteScraperService
-from .excel_search_article_list_service import ExcelSearchArticleListService
+from .excel_service import ExcelSearchArticleListService
 
 class LATimesScraper:
     def __init__(self, phrase, excel_files_dir, article_images_dir, start_date, end_date):

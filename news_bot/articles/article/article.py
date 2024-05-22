@@ -1,5 +1,5 @@
 from datetime import datetime
-from ...url_handler import URLHandler
+from ...utils import URLHandler
 import re
 from typing import Any
 

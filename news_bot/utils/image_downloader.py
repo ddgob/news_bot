@@ -1,6 +1,6 @@
 from RPA.HTTP import HTTP
 from .logger import Logger
-from .articles.article_list import ArticleList
+from ..articles.article_list import ArticleList
 
 class ImageDownloader:
     def __init__(self) -> None:

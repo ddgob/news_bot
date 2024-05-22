@@ -1,6 +1,6 @@
 from . import Article
 from datetime import datetime
-from ...date_handler import DateHandler
+from ...utils import DateHandler
 
 
 class SearchArticle(Article):

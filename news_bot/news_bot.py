@@ -1,9 +1,9 @@
-from .logger import Logger
+from .utils import Logger
 from .news_website_browser_service import NewsWebsiteBrowserService
 from .news_website_scraper_service import NewsWebsiteScraperService
-from .excel_search_article_list_service import ExcelSearchArticleListService
-from .date_handler import DateHandler
-from .image_downloader import ImageDownloader
+from .excel_service import ExcelSearchArticleListService
+from .utils import DateHandler
+from .utils import ImageDownloader
 
 
 class NewsBot:
@@ -61,7 +61,7 @@ class NewsBot:
                 f'{end_date} for search phrase: {search_phrase}'
                 )
             image_downloader = ImageDownloader()
-            image_downloader.download_images(articles, images_dir)
+            #image_downloader.download_images(articles, images_dir)
             return True
         except Exception as e:
             self.__log(

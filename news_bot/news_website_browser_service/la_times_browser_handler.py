@@ -1,8 +1,8 @@
 from RPA.Browser.Selenium import Selenium
-from ..logger import Logger
+from ..utils import Logger
 from ..articles.article_list import SearchArticleList
 from ..articles.article import Article, SearchArticle
-from ..date_handler import DateHandler
+from ..utils import DateHandler
 from datetime import datetime
 from typing import Any
 from .news_website_browser_handler import NewsWebsiteBrowserHandler

@@ -1,7 +1,7 @@
 import logging
 from datetime import datetime, timedelta
 import warnings
-from . import config
+from .. import config
 
 class Logger:
     __instance = None
