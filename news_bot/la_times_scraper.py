@@ -211,7 +211,9 @@ class LATimesScraper:
             self.logger('error', f'An error occurred while storing article values in excel: {e}')
 
     def run(self):
-        news_website_browser_handler: NewsWebsiteBrowserHandler = NewsWebsiteBrowserHandlerFactory.create('https://www.latimes.com/')
+        news_website_browser_handler: NewsWebsiteBrowserHandler = NewsWebsiteBrowserHandlerFactory.create(
+            'https://www.latimes.com/'
+            )
         news_website_browser_handler.open_website()
         news_website_browser_handler.search(self.phrase)
         news_website_browser_handler.select_newest_articles()
