@@ -163,8 +163,6 @@ cython_debug/
 
 mypy.ini
 
-*.sh
-
 .vscode
 
 article_images/
