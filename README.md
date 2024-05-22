@@ -71,7 +71,6 @@ Another option is to use flags to pass the configuration arguments directly with
 To run the News Bot with all the arguments:
 
 ```sh
-conda activate rpa_env
 python main.py -s "Dollar" -e "excel_files" -i "article_images" -l "logs" -sd "05/23/2024" -ed "05/23/2024"
 ```
 
