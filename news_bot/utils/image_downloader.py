@@ -4,11 +4,32 @@ from .logger import Logger
 from ..articles.article_list import ArticleList
 
 class ImageDownloader:
+    """
+    A class to download images from URLs associated with articles.
+    """
+
     def __init__(self) -> None:
+        """
+        Initialize the ImageDownloader.
+
+        Sets up the logger for logging activities and initializes the 
+        HTTP client.
+        """
         self.__log = Logger().log
         self.__http: HTTP = HTTP()
 
     def download_image(self, image_url: str, image_path: str) -> None:
+        """
+        Download an image from the specified URL to the specified path.
+
+        Args:
+            image_url (str): The URL of the image to download.
+            image_path (str): The local path where the image will be 
+            saved.
+
+        Raises:
+            Exception: If an error occurs while downloading the image.
+        """
         try:
             self.__log('info', f'Downloading image from {image_url}...')
             self.__http.download(image_url, image_path)
@@ -21,6 +42,17 @@ class ImageDownloader:
             self.__log('error', error_message)
 
     def download_images(self, articles: ArticleList, images_dir: str) -> None:
+        """
+        Download images for a list of articles.
+
+        Args:
+            articles (ArticleList): The list of articles containing 
+            image URLs.
+            images_dir (str): The directory where images will be saved.
+
+        Returns:
+            None
+        """
         for article in articles:
             image_url: str = article.get_image_url()
             image_name: str = article.get_image_file_name()
