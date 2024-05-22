@@ -7,7 +7,7 @@ from datetime import datetime
 from typing import Any
 
 
-class LATimesBrowserHandler:
+class LATimesBrowserHandler():
     __website_url: str = 'https://www.latimes.com/'
 
     def __init__(self, handler: Selenium) -> None:
@@ -206,6 +206,18 @@ class LATimesBrowserHandler:
                 f'An error occurred while moving from page '
                 f'{current_page_number} to page {current_page_number + 1} '
                 f'next page: {e}'
+            )
+            self.__log('error', error_message)
+            raise
+
+    def close_browser(self) -> None:
+        try:
+            self.__log('info', 'Closing browser...')
+            self.__handler.close_browser()
+            self.__log('info', 'Finished closing browser')
+        except Exception as e:
+            error_message: str = (
+                f'An error occurred while closing the browser: {e}'
             )
             self.__log('error', error_message)
             raise
