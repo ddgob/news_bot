@@ -1,7 +1,7 @@
 from RPA.Excel.Files import Files
-from .logger import Logger
+from ..logger import Logger
 from datetime import datetime
-from .date_handler import DateHandler
+from ..date_handler import DateHandler
 
 
 class ExcelHandler:
