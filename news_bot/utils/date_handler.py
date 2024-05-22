@@ -5,6 +5,10 @@ from .logger import Logger
 
 
 class DateHandler:
+    """
+    Handles date conversion and manipulation tasks.
+    """
+
     __date_regex_patterns = {
         'minutes ago': r'(\d+) minute(s)? ago',
         'hours ago': r'(\d+) hour(s)? ago',
@@ -17,9 +21,27 @@ class DateHandler:
     }
 
     def __init__(self) -> None:
+        """
+        Initialize the DateHandler.
+
+        Sets up the logger for logging activities.
+        """
         self.__log = Logger().log
 
     def __get_string_date_format(self, unconverted_date: str):
+        """
+        Identify the format of a date string.
+
+        Args:
+            unconverted_date (str): The date string to identify.
+
+        Returns:
+            tuple: A tuple containing the identified format and the 
+            match object.
+
+        Raises:
+            ValueError: If the date format is not recognized.
+        """
         if minutes_match := re.search(
             self.__date_regex_patterns['minutes ago'], unconverted_date
             ):
@@ -46,6 +68,19 @@ class DateHandler:
             raise ValueError(error_message)
 
     def convert_date_to_datetime(self, unconverted_date: str):
+        """
+        Convert a date string to a datetime object.
+
+        Args:
+            unconverted_date (str): The date string to convert.
+
+        Returns:
+            datetime: The converted datetime object.
+
+        Raises:
+            ValueError: If the date format is not recognized or cannot 
+            be converted.
+        """
         date_format, date_match = self.__get_string_date_format(
             unconverted_date
             )
@@ -77,6 +112,19 @@ class DateHandler:
     
     def convert_datetime_to_string(self, date_obj: datetime, 
                                    separator=None, is_show_time=False) -> str:
+        """
+        Convert a datetime object to a formatted date string.
+
+        Args:
+            date_obj (datetime): The datetime object to convert.
+            separator (str, optional): The separator to use in the date 
+                                       string. Defaults to None.
+            is_show_time (bool, optional): Whether to include time in 
+                                           the string. Defaults to False.
+
+        Returns:
+            str: The formatted date string.
+        """
         format_string = ''
         if is_show_time:
             if separator == None:
@@ -92,6 +140,17 @@ class DateHandler:
     
     def first_date_earlier_than_second(self, first_date: str, 
                                        second_date: str):
+        """
+        Ensure the first date is earlier than the second date.
+
+        Args:
+            first_date (str): The first date string.
+            second_date (str): The second date string.
+
+        Returns:
+            tuple: A tuple containing the two dates in chronological 
+            order.
+        """
         first_date = self.convert_date_to_datetime(first_date)
         second_date = self.convert_date_to_datetime(second_date)
         if second_date < first_date:
@@ -100,5 +159,14 @@ class DateHandler:
 
     
     def make_until_end_of_day(self, date: datetime):
+        """
+        Extend the given date to the end of the day.
+
+        Args:
+            date (datetime): The date to extend.
+
+        Returns:
+            datetime: The date extended to the end of the day.
+        """
         date += timedelta(hours=23, minutes=59, seconds=59, milliseconds=59)
         return date
