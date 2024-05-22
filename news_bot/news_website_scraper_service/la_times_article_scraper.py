@@ -8,7 +8,17 @@ from ..news_website_browser_service import NewsWebsiteBrowserService
 
 
 class LATimesArticleScraper(NewsWebsiteArticleScraper):
+    """
+    Concrete implementation of NewsWebsiteArticleScraper for scraping 
+    articles from the LA Times website.
+    """
+
     def __init__(self) -> None:
+        """
+        Initialize the LATimesArticleScraper.
+
+        Sets up the logger for logging activities.
+        """
         self.__log = Logger().log
 
     def scrape_search_articles_within_date_range(self, start_date: datetime, 
@@ -16,6 +26,24 @@ class LATimesArticleScraper(NewsWebsiteArticleScraper):
                                                  search_phrase: str, 
                                                  browser_handler: NewsWebsiteBrowserService
                                                  ) -> SearchArticleList:
+        """
+        Scrape articles from the LA Times website within the specified 
+        date range that match the search phrase.
+
+        Args:
+            start_date (datetime): The start date for the date range.
+            end_date (datetime): The end date for the date range.
+            search_phrase (str): The phrase to search for in articles.
+            browser_handler (NewsWebsiteBrowserService): The browser 
+            service handler to use for scraping.
+
+        Returns:
+            SearchArticleList: A list of articles that match the search 
+            criteria.
+
+        Raises:
+            Exception: If an error occurs during the scraping process.
+        """
         try:
             la_times_browser_handler: LATimesBrowserHandler = LATimesBrowserHandler(
                 browser_handler._get_handler()
