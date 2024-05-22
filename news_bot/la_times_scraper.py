@@ -12,6 +12,7 @@ from .excel_handler import ExcelHandler
 from .date_handler import DateHandler
 from .news_website_browser_handler import NewsWebsiteBrowserHandler
 from .news_website_article_scraper import NewsWebsiteArticleScraper
+from .news_website_browser_handler_factory import NewsWebsiteBrowserHandlerFactory
 
 class LATimesScraper:
     def __init__(self, phrase, excel_files_dir, article_images_dir, start_date, end_date):
@@ -210,15 +211,14 @@ class LATimesScraper:
             self.logger('error', f'An error occurred while storing article values in excel: {e}')
 
     def run(self):
-        la_times_browser_handler = LATimesBrowserHandler(self.browser)
-        news_website_browser_handler: NewsWebsiteBrowserHandler = la_times_browser_handler
+        news_website_browser_handler: NewsWebsiteBrowserHandler = NewsWebsiteBrowserHandlerFactory.create('https://www.latimes.com/')
         news_website_browser_handler.open_website()
         news_website_browser_handler.search(self.phrase)
         news_website_browser_handler.select_newest_articles()
         la_times_article_scraper = LATimesArticleScraper()
         news_website_article_scraper: NewsWebsiteArticleScraper = la_times_article_scraper
         articles = news_website_article_scraper.scrape_search_articles_within_date_range(
-            self.start_date, self.end_date, self.phrase, la_times_browser_handler
+            self.start_date, self.end_date, self.phrase, news_website_browser_handler
             )
         news_website_browser_handler.close_browser()
         list_of_dict_articles = articles.convert_to_list_of_dicts()
