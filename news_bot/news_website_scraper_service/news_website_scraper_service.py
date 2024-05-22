@@ -1,7 +1,7 @@
 from .news_website_article_scraper_factory import NewsWebsiteArticleScraperFactory
 from datetime import datetime
-from .news_website_browser_service import NewsWebsiteBrowserService
-from .articles.article_list import SearchArticleList
+from ..news_website_browser_service import NewsWebsiteBrowserService
+from ..articles.article_list import SearchArticleList
 
 
 
