@@ -61,7 +61,7 @@ class DateHandler:
             year = date_match.group(3)
             date_string = f'{short_month} {day}, {year}'
             return datetime.strptime(date_string, '%b %d, %Y')
-        elif date_format == 'month/day/4d_year':
+        elif date_format == 'month/day/4year':
             month = date_match.group(1)
             day = date_match.group(2)
             year = date_match.group(3)
