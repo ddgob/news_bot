@@ -7,6 +7,7 @@ from RPA.HTTP import HTTP
 from .logger import Logger
 from .la_times_browser_handler import LATimesBrowserHandler
 from .la_times_article_scraper import LATimesArticleScraper
+from .image_downloader import ImageDownloader
 
 class LATimesScraper:
     def __init__(self, phrase, excel_files_dir, article_images_dir, start_date, end_date):
@@ -213,7 +214,8 @@ class LATimesScraper:
         articles = la_times_scraper.scrape_search_articles_within_date_range(
             self.start_date, self.end_date, self.phrase, self.browser
             )
-        self.news_data = articles.convert_to_list_of_dict()
-        #self.scrape_all_valid_articles()
-        self.store_article_values_in_excel()
         self.browser.close_browser()
+        self.news_data = articles.convert_to_list_of_dict()
+        self.store_article_values_in_excel()
+        image_downloader: ImageDownloader = ImageDownloader()
+        image_downloader.download_images(articles, self.article_images_dir)
