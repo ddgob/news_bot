@@ -75,5 +75,17 @@ class DateHandler:
             self.__log('error', error_message)
             raise ValueError(error_message)
     
-    def convert_datetime_to_string(self, date_obj: datetime) -> str:
-        return date_obj.strftime('%m/%d/%Y')
+    def convert_datetime_to_string(self, date_obj: datetime, 
+                                   separator=None, is_show_time=False) -> str:
+        format_string = ''
+        if is_show_time:
+            if separator == None:
+                format_string = '%m/%d/%Y_%H-%M-%S'
+            elif separator == '-':
+                format_string = '%m-%d-%Y_%H-%M-%S'
+        else:
+            if separator == None:
+                format_string = '%m/%d/%Y'
+            elif separator == '-':
+                format_string = '%m-%d-%Y'
+        return date_obj.strftime(format_string)
