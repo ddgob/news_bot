@@ -1,0 +1,10 @@
+name: rpa_env
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10.12
+  - pip=24.0
+  - pip:
+    - rpaframework==28.6.0
+    - robocorp==2.0.2
+
