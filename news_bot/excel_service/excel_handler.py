@@ -7,14 +7,40 @@ from ..utils import DateHandler
 
 
 class ExcelHandler:
+    """
+    Handler class for operations related to Excel files.
+    """
+
     def __init__(self):
+        """
+        Initialize the ExcelHandler.
+
+        Sets up the logger and the Excel file handler.
+        """
         self.__log = Logger().log
         self.__excel = Files()
 
     def convert_list_of_dicts_to_excel_file(self, 
                                                 list_of_dicts: list[dict],
                                                 excel_files_dir: str,
-                                                worksheet_name: str):
+                                                worksheet_name: str) -> None:
+        """
+        Convert a list of dictionaries to an Excel file.
+
+        Args:
+            list_of_dicts (list[dict]): The list of dictionaries to 
+            convert.
+            excel_files_dir (str): The directory where the Excel file 
+            will be saved.
+            worksheet_name (str): The name of the worksheet within the 
+            Excel file.
+
+        Returns:
+            None
+
+        Raises:
+            Exception: If an error occurs while converting the list of dictionaries to an Excel file.
+        """
         try:
             self.__log(
                 'info', 
