@@ -166,3 +166,5 @@ mypy.ini
 *.sh
 
 .vscode
+
+article_images/
