@@ -9,14 +9,34 @@ from ..articles.article import Article, SearchArticle
 from ..utils import DateHandler
 from .news_website_browser_handler import NewsWebsiteBrowserHandler
 
+
 class LATimesBrowserHandler(NewsWebsiteBrowserHandler):
+    """
+    Browser handler for scraping articles from the LA Times website.
+    """
+
     __website_url: str = 'https://www.latimes.com/'
 
     def __init__(self, handler: Selenium) -> None:
+        """
+        Initialize the LATimesBrowserHandler.
+
+        Args:
+            handler (Selenium): The Selenium browser handler.
+        """
         self.__handler: Selenium = handler
         self.__log = Logger().log
 
     def open_website(self) -> None:
+        """
+        Open the LA Times website in a browser.
+
+        Returns:
+            None
+
+        Raises:
+            Exception: If an error occurs while opening the website.
+        """
         try:
             self.__log('info', f'Opening {self.__website_url} website...')
             self.__handler.open_available_browser(self.__website_url)
@@ -31,6 +51,19 @@ class LATimesBrowserHandler(NewsWebsiteBrowserHandler):
             self.__log('error', error_message)
 
     def search(self, phrase: str) -> None:
+        """
+        Search for articles on the LA Times website using the specified 
+        phrase.
+
+        Args:
+            phrase (str): The search phrase to use.
+
+        Returns:
+            None
+
+        Raises:
+            Exception: If an error occurs while performing the search.
+        """
         try:
             search_button_locator: str = "//*[@data-element='search-button']"
             search_input_field_locator: str = (
@@ -57,6 +90,16 @@ class LATimesBrowserHandler(NewsWebsiteBrowserHandler):
             )
 
     def select_newest_articles(self) -> None:
+        """
+        Select the newest articles on the LA Times website.
+
+        Returns:
+            None
+
+        Raises:
+            Exception: If an error occurs while selecting the newest 
+            articles.
+        """
         try:
             order_articles_dropdown_locator: str = "//select[@name='s']"
             articles_section_locator: str = (
@@ -83,6 +126,19 @@ class LATimesBrowserHandler(NewsWebsiteBrowserHandler):
             )
 
     def __get_article_web_elements(self, page_number: int) -> list[Any]:
+        """
+        Get the web elements for articles on the specified page number.
+
+        Args:
+            page_number (int): The page number to get articles from.
+
+        Returns:
+            list[Any]: A list of web elements for the articles.
+
+        Raises:
+            Exception: If an error occurs while getting the web 
+            elements.
+        """
         try:
             article_section_locator: str = (
                 'class:search-results-module-results-menu'
@@ -116,6 +172,21 @@ class LATimesBrowserHandler(NewsWebsiteBrowserHandler):
     def __get_article(
             self, article_web_element: Any, article_number: int, 
             page_number: int) -> Article:
+        """
+        Get the article details from the web element.
+
+        Args:
+            article_web_element (Any): The web element of the article.
+            article_number (int): The article number on the page.
+            page_number (int): The page number of the article.
+
+        Returns:
+            Article: The Article object with the extracted details.
+
+        Raises:
+            Exception: If an error occurs while extracting the article 
+            details.
+        """
         try:
             # Define locators
             title_locator: str = 'class:promo-title'
@@ -153,6 +224,21 @@ class LATimesBrowserHandler(NewsWebsiteBrowserHandler):
 
     def get_articles(self, search_phrase: str, 
                      page_number: int) -> SearchArticleList:
+        """
+        Get the articles from the LA Times website that match the search
+        phrase.
+
+        Args:
+            search_phrase (str): The phrase to search for in articles.
+            page_number (int): The page number to get articles from.
+
+        Returns:
+            SearchArticleList: A list of articles that match the search 
+            criteria.
+
+        Raises:
+            Exception: If an error occurs while getting the articles.
+        """
         try:
             search_articles: SearchArticleList = SearchArticleList(
                 search_phrase
@@ -180,6 +266,19 @@ class LATimesBrowserHandler(NewsWebsiteBrowserHandler):
             raise
     
     def move_to_next_article_page(self, current_page_number: int) -> bool:
+        """
+        Move to the next page of articles.
+
+        Args:
+            current_page_number (int): The current page number.
+
+        Returns:
+            bool: True if the navigation to the next page is successful,
+            False otherwise.
+
+        Raises:
+            Exception: If an error occurs while moving to the next page.
+        """
         try:
             next_page_button_parent_locator: str = (
                 'class:search-results-module-next-page'
@@ -215,6 +314,15 @@ class LATimesBrowserHandler(NewsWebsiteBrowserHandler):
             raise
 
     def close_browser(self) -> None:
+        """
+        Close the browser.
+
+        Returns:
+            None
+
+        Raises:
+            Exception: If an error occurs while closing the browser.
+        """
         try:
             self.__log('info', 'Closing browser...')
             self.__handler.close_browser()
@@ -227,5 +335,11 @@ class LATimesBrowserHandler(NewsWebsiteBrowserHandler):
             raise
     
     def _get_handler(self) -> Selenium:
+        """
+        Get the Selenium handler.
+
+        Returns:
+            Selenium: The Selenium handler.
+        """
         return self.__handler
 
