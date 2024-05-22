@@ -12,7 +12,6 @@ class SearchArticleList(ArticleList):
         return iter(self._get_articles())
 
     def append(self, article_to_append: Article) -> None:
-        #_articles: list[Article] = self._get_articles()
         article: Article = article_to_append
         if not isinstance(article, Article):
             raise ValueError(
