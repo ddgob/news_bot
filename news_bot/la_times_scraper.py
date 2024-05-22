@@ -216,16 +216,9 @@ class LATimesScraper:
         articles = la_times_scraper.scrape_search_articles_within_date_range(
             self.start_date, self.end_date, self.phrase, self.browser
             )
-        self.browser.close_browser()
+        la_times_browser_handler.close_browser()
         list_of_dict_articles = articles.convert_to_list_of_dicts()
-        date_handler = DateHandler()
-        """datetime_start_date = date_handler.convert_date_to_datetime(
-            self.start_date
-            )
-        datetime_end_date = date_handler.convert_date_to_datetime(
-            self.end_date
-            )"""
-        
+        date_handler = DateHandler()        
         formatted_start_date = date_handler.convert_datetime_to_string(
             self.start_date, separator='-'
             )
