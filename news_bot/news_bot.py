@@ -7,16 +7,48 @@ from .utils import ImageDownloader
 
 
 class NewsBot:
+    """
+    A bot to scrape news articles from a website based on a search 
+    phrase and date range.
+    """
+
     def __init__(self) -> None:
+        """
+        Initialize the NewsBot.
+
+        Sets up the logger for logging activities.
+        """
         self.__log = Logger().log
-
-
 
     def scrape_articles_by_date_range(self, website_url: str, 
                                       search_phrase: str, start_date: str, 
                                       end_date: str, 
                                       excel_files_dir: str, 
                                       images_dir: str) -> bool:
+        """
+        Scrape news articles from the website within the specified date 
+        range and save them to an Excel file and download associated 
+        images.
+
+        Args:
+            website_url (str): The URL of the news website.
+            search_phrase (str): The phrase to search for in articles.
+            start_date (str): The start date for the date range 
+            (MM/DD/YYYY).
+            end_date (str): The end date for the date range (MM/DD/YYYY).
+            excel_files_dir (str): The directory where the Excel file 
+            will be saved.
+            images_dir (str): The directory where the article images 
+            will be saved.
+
+        Returns:
+            bool: True if the scraping and saving process was 
+                    successful, 
+                  False otherwise.
+
+        Raises:
+            Exception: If an error occurs during the scraping process.
+        """
         try:
             date_handler = DateHandler()
             start_date, end_date = date_handler.first_date_earlier_than_second(
