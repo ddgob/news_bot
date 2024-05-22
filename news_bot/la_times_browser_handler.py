@@ -5,9 +5,9 @@ from .articles.article import Article, SearchArticle
 from .date_handler import DateHandler
 from datetime import datetime
 from typing import Any
+from .news_website_browser_handler import NewsWebsiteBrowserHandler
 
-
-class LATimesBrowserHandler():
+class LATimesBrowserHandler(NewsWebsiteBrowserHandler):
     __website_url: str = 'https://www.latimes.com/'
 
     def __init__(self, handler: Selenium) -> None:
