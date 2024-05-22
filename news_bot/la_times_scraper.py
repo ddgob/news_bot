@@ -12,7 +12,7 @@ from .excel_handler import ExcelHandler
 from .date_handler import DateHandler
 from .news_website_browser_handler import NewsWebsiteBrowserHandler
 from .news_website_article_scraper import NewsWebsiteArticleScraper
-from .news_website_browser_handler_factory import NewsWebsiteBrowserHandlerFactory
+from .news_website_browser_service.news_website_browser_handler_factory import NewsWebsiteBrowserHandlerFactory
 from .news_website_article_scraper_factory import NewsWebsiteArticleScraperFactory
 from .news_website_browser_service import NewsWebsiteBrowserService
 from .news_website_scraper_service import NewsWebsiteScraperService
