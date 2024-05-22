@@ -10,6 +10,7 @@ from .la_times_article_scraper import LATimesArticleScraper
 from .image_downloader import ImageDownloader
 from .excel_handler import ExcelHandler
 from .date_handler import DateHandler
+from .news_website_browser_handler import NewsWebsiteBrowserHandler
 
 class LATimesScraper:
     def __init__(self, phrase, excel_files_dir, article_images_dir, start_date, end_date):
@@ -209,14 +210,15 @@ class LATimesScraper:
 
     def run(self):
         la_times_browser_handler = LATimesBrowserHandler(self.browser)
-        la_times_browser_handler.open_website()
-        la_times_browser_handler.search(self.phrase)
-        la_times_browser_handler.select_newest_articles()
+        news_website_browser_handler: NewsWebsiteBrowserHandler = la_times_browser_handler
+        news_website_browser_handler.open_website()
+        news_website_browser_handler.search(self.phrase)
+        news_website_browser_handler.select_newest_articles()
         la_times_scraper = LATimesArticleScraper()
         articles = la_times_scraper.scrape_search_articles_within_date_range(
             self.start_date, self.end_date, self.phrase, self.browser
             )
-        la_times_browser_handler.close_browser()
+        news_website_browser_handler.close_browser()
         list_of_dict_articles = articles.convert_to_list_of_dicts()
         date_handler = DateHandler()        
         formatted_start_date = date_handler.convert_datetime_to_string(
