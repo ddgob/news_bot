@@ -8,6 +8,8 @@ from .logger import Logger
 from .la_times_browser_handler import LATimesBrowserHandler
 from .la_times_article_scraper import LATimesArticleScraper
 from .image_downloader import ImageDownloader
+from .excel_handler import ExcelHandler
+from .date_handler import DateHandler
 
 class LATimesScraper:
     def __init__(self, phrase, excel_files_dir, article_images_dir, start_date, end_date):
@@ -215,7 +217,27 @@ class LATimesScraper:
             self.start_date, self.end_date, self.phrase, self.browser
             )
         self.browser.close_browser()
-        self.news_data = articles.convert_to_list_of_dicts()
-        self.store_article_values_in_excel()
-        image_downloader: ImageDownloader = ImageDownloader()
-        image_downloader.download_images(articles, self.article_images_dir)
+        list_of_dict_articles = articles.convert_to_list_of_dicts()
+        date_handler = DateHandler()
+        """datetime_start_date = date_handler.convert_date_to_datetime(
+            self.start_date
+            )
+        datetime_end_date = date_handler.convert_date_to_datetime(
+            self.end_date
+            )"""
+        
+        formatted_start_date = date_handler.convert_datetime_to_string(
+            self.start_date, separator='-'
+            )
+        formatted_end_date = date_handler.convert_datetime_to_string(
+            self.end_date, separator='-'
+            )
+        excel_handler = ExcelHandler()
+        worksheet_name = (
+            f'{self.phrase}_{formatted_start_date}-{formatted_end_date}'
+        )
+        excel_handler.convert_list_of_dicts_to_excel_file(
+            list_of_dict_articles, self.excel_files_dir, worksheet_name
+            )
+        #image_downloader: ImageDownloader = ImageDownloader()
+        #image_downloader.download_images(articles, self.article_images_dir)
