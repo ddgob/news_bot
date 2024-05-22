@@ -1,0 +1,32 @@
+tasks:
+  Run News Bot:
+    command:
+      - python
+      - main.py
+      - -s
+      - ${search_phrase}
+      - -e
+      - ${excel_dir}
+      - -i
+      - ${image_dir}
+      - -l
+      - ${log_dir}
+      - -sd
+      - ${start_date}
+      - -ed
+      - ${end_date}
+
+condaConfigFile: conda.yaml
+
+variables:
+  search_phrase: Dollar
+  excel_dir: excel_files
+  image_dir: article_images
+  log_dir: logs
+  start_date: 05/16/2024
+  end_date: 05/16/2024
+
+artifactsDir: output
+
+ignoreFiles:
+  - .gitignore
