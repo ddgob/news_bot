@@ -5,6 +5,20 @@ from datetime import datetime
 from news_bot import NewsBot, config
 
 def validate_date(date_str: str):
+    """
+    Validate a date string.
+
+    Args:
+        date_str (str): The date string to validate in MM/DD/YYYY 
+        format.
+
+    Returns:
+        tuple: A tuple containing the validated date (or None if 
+        invalid) and a boolean indicating whether the date is valid.
+
+    Raises:
+        ValueError: If the date string is not in the correct format.
+    """
     try:
         is_valid: bool = True
         date: datetime = datetime.strptime(date_str, "%m/%d/%Y")
@@ -15,6 +29,17 @@ def validate_date(date_str: str):
         return (None, is_valid)
 
 def validate_directory(dir_str: str):
+    """
+    Validate a directory string.
+
+    Args:
+        dir_str (str): The directory path to validate.
+
+    Returns:
+        tuple: A tuple containing the directory path (or None if 
+        invalid) and a boolean indicating whether the directory is 
+        valid.
+    """
     if not os.path.isdir(dir_str) or dir_str == '':
         print(f"Directory does not exist: '{dir_str}'.")
         return None, False
@@ -24,6 +49,15 @@ def validate_directory(dir_str: str):
     return (dir_str, True)
 
 def prompt_for_invalid_args(args) -> None:
+    """
+    Prompt the user for any missing or invalid command-line arguments.
+
+    Args:
+        args: The command-line arguments.
+
+    Returns:
+        None
+    """
     if args.search_phrase is None:
         is_sure = False
         while not is_sure:
