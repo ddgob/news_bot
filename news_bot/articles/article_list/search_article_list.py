@@ -1,8 +1,20 @@
+"""
+This module defines the SearchArticleList class, which is a specialized 
+list for managing SearchArticle objects. It provides functionality specific 
+to search phrases, including methods to append and extend the list, convert 
+the list to a list of dictionaries, and filter articles within a specific 
+date range.
+
+Classes:
+    SearchArticleList: A list to manage SearchArticle objects with 
+    additional functionality specific to search phrases.
+"""
+
 from datetime import datetime
 
 from news_bot.articles.article_list import ArticleList
-from ..article import Article
-from ..article import SearchArticle
+from news_bot.articles.article import Article
+from news_bot.articles.article import SearchArticle
 
 class SearchArticleList(ArticleList):
     """
@@ -81,13 +93,13 @@ class SearchArticleList(ArticleList):
         """
         list_of_dict: list[dict] = []
         for article in self._get_articles():
-            search_article = SearchArticle.from_article(article, 
+            search_article = SearchArticle.from_article(article,
                                                         self.__search_phrase
                                                         )
             list_of_dict.append(search_article.convert_to_dict())
         return list_of_dict
-    
-    def filter_articles_within_date_range(self, start_date: datetime, 
+
+    def filter_articles_within_date_range(self, start_date: datetime,
                                    end_date: datetime) -> 'SearchArticleList':
         """
         Filter the articles within a specific date range.

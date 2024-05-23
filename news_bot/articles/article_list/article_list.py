@@ -1,6 +1,16 @@
+"""
+This module defines the ArticleList class, which is used to manage a list of 
+Article objects. It provides methods to append and extend the list, filter 
+articles within a specific date range, and check if all articles are before 
+a specified date.
+
+Classes:
+    ArticleList: A list to manage Article objects.
+"""
+
 from datetime import datetime
 
-from ..article import Article
+from news_bot.articles.article import Article
 
 
 class ArticleList:
@@ -25,7 +35,7 @@ class ArticleList:
         """
         return iter(self.__articles)
 
-    def append(self, article: Article) -> None:
+    def append(self, article_to_append: Article) -> None:
         """
         Append an article to the list.
 
@@ -36,12 +46,12 @@ class ArticleList:
             ValueError: If the article is not of type Article or its 
             subclass.
         """
-        if not isinstance(article, Article):
+        if not isinstance(article_to_append, Article):
             raise ValueError(
                 'When trying to append an object to an ArticleList, that '
                 'object must be of type Article or a subclass of Article'
             )
-        self.__articles.append(article)
+        self.__articles.append(article_to_append)
 
     def _get_articles(self) -> list[Article]:
         """
@@ -52,7 +62,7 @@ class ArticleList:
         """
         return self.__articles
 
-    def filter_articles_within_date_range(self, start_date: datetime, 
+    def filter_articles_within_date_range(self, start_date: datetime,
                                    end_date: datetime) -> 'ArticleList':
         """
         Filter the articles within a specific date range.
@@ -71,7 +81,7 @@ class ArticleList:
                 continue
             articles_within_date_range.append(article)
         return articles_within_date_range
-    
+
     def extend(self, articles: 'ArticleList') -> None:
         """
         Extend the list by appending elements from another article list.

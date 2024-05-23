@@ -8,7 +8,6 @@ __all__ variable is defined to specify the public interface of the
 package.
 """
 
-
 from .date_handler import DateHandler
 from .url_handler import URLHandler
 from .logger import Logger

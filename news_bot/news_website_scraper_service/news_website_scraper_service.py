@@ -10,7 +10,6 @@ Classes:
     website within a specified date range and matching a given search phrase.
 """
 
-
 from datetime import datetime
 
 from .news_website_article_scraper_factory import NewsWebsiteArticleScraperFactory

@@ -6,7 +6,6 @@ dates are in chronological order. Additionally, it can extend dates to
 the end of the day and log activities using a custom logger.
 """
 
-
 from datetime import datetime, timedelta
 import re
 

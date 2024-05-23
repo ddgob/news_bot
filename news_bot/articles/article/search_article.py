@@ -1,7 +1,21 @@
+"""
+This module defines the SearchArticle class, which extends the base Article 
+class. It adds additional functionality related to the search phrase used to 
+find the article, including methods to create a SearchArticle from an 
+existing Article, get the search phrase, count the occurrences of the search 
+phrase in the article's title and description, and convert the article to a 
+dictionary representation.
+
+Classes:
+    SearchArticle: Represents a search article that extends the base 
+    Article class, with additional functionality related to the search 
+    phrase.
+"""
+
 from datetime import datetime
 
 from news_bot.articles.article import Article
-from ...utils import DateHandler
+from news_bot.utils import DateHandler
 
 
 class SearchArticle(Article):
@@ -14,9 +28,9 @@ class SearchArticle(Article):
 
     def __init__(
         self,
-        title: str, 
-        date: datetime, 
-        description: str, 
+        title: str,
+        date: datetime,
+        description: str,
         image_url: str,
         search_phrase: str
     ) -> None:
@@ -35,7 +49,7 @@ class SearchArticle(Article):
         self.__search_phrase: str = search_phrase
 
     @classmethod
-    def from_article(cls, article: Article, 
+    def from_article(cls, article: Article,
                      search_phrase: str) -> 'SearchArticle':
         """
         Create a SearchArticle from an existing Article.
@@ -48,11 +62,11 @@ class SearchArticle(Article):
         Returns:
             SearchArticle: A new SearchArticle instance.
         """
-        return cls(article.get_title(), article.get_date(), 
-                   article.get_description(), article.get_image_src(), 
+        return cls(article.get_title(), article.get_date(),
+                   article.get_description(), article.get_image_src(),
                    search_phrase
                    )
-    
+
     def get_search_phrase(self) -> str:
         """
         Get the search phrase associated with the article.
@@ -61,7 +75,7 @@ class SearchArticle(Article):
             str: The search phrase.
         """
         return self.__search_phrase
-    
+
     def get_search_phrase_count(self) -> int:
         """
         Get the count of the search phrase occurrences in the article's 
@@ -76,7 +90,7 @@ class SearchArticle(Article):
         title_count = title.count(search_phrase)
         description_count = description.count(search_phrase)
         return title_count + description_count
-    
+
     def convert_to_dict(self) -> dict:
         """
         Convert the article to a dictionary representation.

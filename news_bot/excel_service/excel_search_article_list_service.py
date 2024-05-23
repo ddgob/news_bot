@@ -8,7 +8,6 @@ Classes:
     search articles to an Excel file.
 """
 
-
 from ..articles.article_list import SearchArticleList
 from .excel_handler import ExcelHandler
 

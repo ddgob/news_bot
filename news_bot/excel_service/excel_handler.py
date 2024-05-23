@@ -8,7 +8,6 @@ Classes:
     search articles to an Excel file.
 """
 
-
 from datetime import datetime
 
 from RPA.Excel.Files import Files

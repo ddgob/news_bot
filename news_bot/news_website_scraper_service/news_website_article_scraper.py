@@ -8,7 +8,6 @@ Classes:
     interface for scraping articles within a date range and search phrase.
 """
 
-
 from abc import ABC, abstractmethod
 from datetime import datetime
 

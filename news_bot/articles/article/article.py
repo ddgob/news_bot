@@ -1,8 +1,21 @@
+"""
+This module defines the Article class, which represents a news article with 
+its title, date, description, and image source. It provides methods to 
+retrieve these attributes, check if the article's publication date is within 
+a given date range or before a specific date, resolve the image URL, get the 
+image file name, and check if the title or description contains a monetary 
+value.
+
+Classes:
+    Article: Represents a news article with its title, date, description, 
+    and image source.
+"""
+
 from typing import Any
 import re
 from datetime import datetime
 
-from ...utils import URLHandler
+from news_bot.utils import URLHandler
 
 
 class Article:
@@ -13,9 +26,9 @@ class Article:
 
     def __init__(
         self,
-        title: str, 
-        date: datetime, 
-        description: str, 
+        title: str,
+        date: datetime,
+        description: str,
         image_src: str
     ) -> None:
         """
@@ -80,8 +93,8 @@ class Article:
             given date, False otherwise.
         """
         return self.__date < date
-    
-    def is_between_dates(self, start_date: datetime, 
+
+    def is_between_dates(self, start_date: datetime,
                          end_date: datetime) -> bool:
         """
         Check if the article's publication date is within a given date 
@@ -96,7 +109,7 @@ class Article:
             date range, False otherwise.
         """
         return start_date <= self.__date <= end_date
-    
+
     def get_image_url(self) -> str:
         """
         Get the resolved URL of the article's image.
@@ -106,7 +119,7 @@ class Article:
         """
         url_handler: URLHandler = URLHandler()
         return url_handler.get_image_url(self.__image_src)
-    
+
     def get_image_file_name(self) -> str:
         """
         Get the file name of the article's image.
@@ -116,7 +129,7 @@ class Article:
         """
         image_url = self.get_image_url()
         return image_url.split('/')[-1]
-    
+
     def is_contain_money_in_text(self) -> bool:
         """
         Check if the article's title or description contains a monetary 
@@ -131,7 +144,7 @@ class Article:
             r'|(\d{1,3}(,?\d{3})*(\.\d{1,2})? (dollars|USD))'
         )
         match_title: Any = re.search(money_regex_pattern, self.__title)
-        match_description: Any = re.search(money_regex_pattern, 
+        match_description: Any = re.search(money_regex_pattern,
                                            self.__description
                                            )
         if match_title or match_description:

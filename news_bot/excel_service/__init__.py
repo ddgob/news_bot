@@ -12,7 +12,6 @@ __all__:
     search articles to an Excel file.
 """
 
-
 from .excel_search_article_list_service import ExcelSearchArticleListService
 
 __all__ = ['ExcelSearchArticleListService']

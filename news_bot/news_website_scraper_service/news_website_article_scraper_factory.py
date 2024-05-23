@@ -9,7 +9,6 @@ Classes:
     instances of NewsWebsiteArticleScraper based on the website URL.
 """
 
-
 from .news_website_article_scraper import NewsWebsiteArticleScraper
 from .la_times_article_scraper import LATimesArticleScraper
 

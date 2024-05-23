@@ -11,7 +11,6 @@ Classes:
     articles.
 """
 
-
 from abc import ABC, abstractmethod
 
 from RPA.Browser.Selenium import Selenium

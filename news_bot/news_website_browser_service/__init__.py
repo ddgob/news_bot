@@ -25,7 +25,6 @@ __all__:
     instances of NewsWebsiteBrowserHandler based on the website URL.
 """
 
-
 from .news_website_browser_service import NewsWebsiteBrowserService
 from .la_times_browser_handler import LATimesBrowserHandler
 

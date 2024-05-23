@@ -9,7 +9,6 @@ Classes:
     instances of NewsWebsiteBrowserHandler based on the website URL.
 """
 
-
 from RPA.Browser.Selenium import Selenium
 
 from .news_website_browser_handler import NewsWebsiteBrowserHandler

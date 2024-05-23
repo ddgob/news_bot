@@ -11,7 +11,6 @@ Classes:
     the LA Times website.
 """
 
-
 from datetime import datetime
 from typing import Any
 

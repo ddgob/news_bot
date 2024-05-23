@@ -11,7 +11,6 @@ Classes:
     browser.
 """
 
-
 from .news_website_browser_handler_factory import NewsWebsiteBrowserHandlerFactory
 
 class NewsWebsiteBrowserService:

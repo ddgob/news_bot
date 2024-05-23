@@ -10,7 +10,6 @@ Classes:
     website.
 """
 
-
 from datetime import datetime
 
 from ..articles.article_list import SearchArticleList

@@ -12,7 +12,6 @@ __all__:
     a news website within a specified date range.
 """
 
-
 from .news_website_scraper_service import NewsWebsiteScraperService
 
 __all__ = ['NewsWebsiteScraperService']
