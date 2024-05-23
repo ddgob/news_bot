@@ -4,29 +4,24 @@ tasks:
       - python
       - main.py
       - -s
-      - ${search_phrase}
+      - Dollar
       - -e
-      - ${excel_dir}
+      - excel_files
       - -i
-      - ${image_dir}
+      - article_images
       - -l
-      - ${log_dir}
+      - logs
       - -sd
-      - ${start_date}
+      - 05/22/2024
       - -ed
-      - ${end_date}
+      - 05/22/2024
 
 condaConfigFile: conda.yaml
-
-variables:
-  search_phrase: Dollar
-  excel_dir: excel_files
-  image_dir: article_images
-  log_dir: logs
-  start_date: 05/16/2024
-  end_date: 05/16/2024
 
 artifactsDir: output
 
 ignoreFiles:
   - .gitignore
+  - setup.sh
+  - README.md
+  - LICENSE
