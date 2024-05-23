@@ -1,3 +1,10 @@
+"""
+This module provides the ImageDownloader class, which handles the 
+downloading of images from URLs associated with articles. The class 
+uses an HTTP client for downloading images and logs activities using 
+a custom logger.
+"""
+
 from RPA.HTTP import HTTP
 
 from .logger import Logger

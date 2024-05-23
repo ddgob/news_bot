@@ -14,9 +14,9 @@ class NewsWebsiteArticleScraper(ABC):
     """
 
     @abstractmethod
-    def scrape_search_articles_within_date_range(self, start_date: datetime, 
-                                                 end_date: datetime, 
-                                                 search_phrase: str, 
+    def scrape_search_articles_within_date_range(self, start_date: datetime,
+                                                 end_date: datetime,
+                                                 search_phrase: str,
                                                  handler: NewsWebsiteBrowserService
                                                  ) -> SearchArticleList:
         """

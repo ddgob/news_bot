@@ -1,3 +1,9 @@
+"""
+This module provides the URLHandler class, which handles URL parsing 
+and extraction tasks. The class uses a logger to log activities and 
+provides methods to extract image URLs from given source URLs.
+"""
+
 from urllib.parse import urlparse, parse_qs
 from typing import Any
 

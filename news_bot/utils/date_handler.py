@@ -1,3 +1,12 @@
+"""
+This module provides the DateHandler class, which handles date conversion 
+and manipulation tasks. The class includes methods to convert date strings 
+to datetime objects, format datetime objects as strings, and ensure that 
+dates are in chronological order. Additionally, it can extend dates to 
+the end of the day and log activities using a custom logger.
+"""
+
+
 from datetime import datetime, timedelta
 import re
 
@@ -51,7 +60,7 @@ class DateHandler:
             ):
             return 'hours ago', hours_match
         elif short_month_day_year_match := re.search(
-            self.__date_regex_patterns['Short month day, year'], 
+            self.__date_regex_patterns['Short month day, year'],
             unconverted_date
             ):
             return 'Short month day, year', short_month_day_year_match
@@ -109,8 +118,8 @@ class DateHandler:
             )
             self.__log('error', error_message)
             raise ValueError(error_message)
-    
-    def convert_datetime_to_string(self, date_obj: datetime, 
+
+    def convert_datetime_to_string(self, date_obj: datetime,
                                    separator=None, is_show_time=False) -> str:
         """
         Convert a datetime object to a formatted date string.
@@ -127,18 +136,18 @@ class DateHandler:
         """
         format_string = ''
         if is_show_time:
-            if separator == None:
+            if separator is None:
                 format_string = '%m/%d/%Y_%H-%M-%S'
             elif separator == '-':
                 format_string = '%m-%d-%Y_%H-%M-%S'
         else:
-            if separator == None:
+            if separator is None:
                 format_string = '%m/%d/%Y'
             elif separator == '-':
                 format_string = '%m-%d-%Y'
         return date_obj.strftime(format_string)
-    
-    def first_date_earlier_than_second(self, first_date: str, 
+
+    def first_date_earlier_than_second(self, first_date: str,
                                        second_date: str) -> tuple[datetime, datetime]:
         """
         Ensure the first date is earlier than the second date.
@@ -161,7 +170,6 @@ class DateHandler:
             datetime_first_date, datetime_second_date = datetime_second_date, datetime_first_date
         return datetime_first_date, datetime_second_date
 
-    
     def make_until_end_of_day(self, date: datetime) -> datetime:
         """
         Extend the given date to the end of the day.
