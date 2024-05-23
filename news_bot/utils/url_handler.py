@@ -17,7 +17,7 @@ class URLHandler:
         """
         self.__log = Logger().log
 
-    def get_image_url(cls, image_src) -> str:
+    def get_image_url(self, image_src) -> str:
         """
         Extract the image URL from a given image source URL.
 
@@ -40,6 +40,6 @@ class URLHandler:
                 f'An error occurred while getting image url: the url returned '
                 f'None for image source image_src {image_src}'
             )
-            cls.__log('error', error_message)
+            self.__log('error', error_message)
             raise ValueError(error_message)
         return image_url
