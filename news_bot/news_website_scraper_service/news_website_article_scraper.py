@@ -1,3 +1,14 @@
+"""
+This module defines the NewsWebsiteArticleScraper abstract base class, which 
+provides an interface for scraping articles from a news website within a 
+specified date range and matching a given search phrase.
+
+Classes:
+    NewsWebsiteArticleScraper: An abstract base class that defines the 
+    interface for scraping articles within a date range and search phrase.
+"""
+
+
 from abc import ABC, abstractmethod
 from datetime import datetime
 
@@ -17,7 +28,7 @@ class NewsWebsiteArticleScraper(ABC):
     def scrape_search_articles_within_date_range(self, start_date: datetime,
                                                  end_date: datetime,
                                                  search_phrase: str,
-                                                 handler: NewsWebsiteBrowserService
+                                                 browser_handler: NewsWebsiteBrowserService
                                                  ) -> SearchArticleList:
         """
         Scrape articles from the news website within the specified date 
@@ -38,4 +49,3 @@ class NewsWebsiteArticleScraper(ABC):
             NotImplementedError: If the method is not implemented by a 
             subclass.
         """
-        pass

@@ -1,3 +1,14 @@
+"""
+This module defines the ExcelSearchArticleListService class, which is a 
+service for saving a list of search articles to an Excel file. It uses the 
+ExcelHandler to convert and save articles.
+
+Classes:
+    ExcelSearchArticleListService: A service class for saving a list of 
+    search articles to an Excel file.
+"""
+
+
 from ..articles.article_list import SearchArticleList
 from .excel_handler import ExcelHandler
 
@@ -17,9 +28,9 @@ class ExcelSearchArticleListService:
         self.__excel_handler = ExcelHandler()
 
 
-    def save_search_article_list_to_excel_file(self, 
-                                               articles: SearchArticleList, 
-                                               excel_file_name: str, 
+    def save_search_article_list_to_excel_file(self,
+                                               articles: SearchArticleList,
+                                               excel_file_name: str,
                                                worksheet_name: str) -> None:
         """
         Save the search article list to an Excel file.

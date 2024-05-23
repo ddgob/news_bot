@@ -1,3 +1,16 @@
+"""
+This module defines the LATimesArticleScraper class, which is a concrete 
+implementation of the NewsWebsiteArticleScraper abstract base class. It is 
+used for scraping articles from the LA Times website within a specified date 
+range and matching a given search phrase.
+
+Classes:
+    LATimesArticleScraper: A concrete implementation of 
+    NewsWebsiteArticleScraper for scraping articles from the LA Times 
+    website.
+"""
+
+
 from datetime import datetime
 
 from ..articles.article_list import SearchArticleList
@@ -21,9 +34,9 @@ class LATimesArticleScraper(NewsWebsiteArticleScraper):
         """
         self.__log = Logger().log
 
-    def scrape_search_articles_within_date_range(self, start_date: datetime, 
-                                                 end_date: datetime, 
-                                                 search_phrase: str, 
+    def scrape_search_articles_within_date_range(self, start_date: datetime,
+                                                 end_date: datetime,
+                                                 search_phrase: str,
                                                  browser_handler: NewsWebsiteBrowserService
                                                  ) -> SearchArticleList:
         """

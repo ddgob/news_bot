@@ -1,3 +1,16 @@
+"""
+This module provides the NewsWebsiteScraperService class, which is used to 
+scrape articles from a specified news website within a given date range. 
+It utilizes the NewsWebsiteArticleScraperFactory to create an appropriate 
+scraper for the website and the NewsWebsiteBrowserService to handle the 
+browsing and scraping process.
+
+Classes:
+    NewsWebsiteScraperService: A service for scraping articles from a news 
+    website within a specified date range and matching a given search phrase.
+"""
+
+
 from datetime import datetime
 
 from .news_website_article_scraper_factory import NewsWebsiteArticleScraperFactory
@@ -22,9 +35,9 @@ class NewsWebsiteScraperService:
         self.news_website_article_scraper = NewsWebsiteArticleScraperFactory.create(
             website_url
             )
-        
-    def scrape_search_articles_within_date_range(self, start_date: datetime, 
-                                                 end_date: datetime, 
+
+    def scrape_search_articles_within_date_range(self, start_date: datetime,
+                                                 end_date: datetime,
                                                  search_phrase: str,
                                                  handler: NewsWebsiteBrowserService
                                                  ) -> SearchArticleList:

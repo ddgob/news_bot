@@ -1,3 +1,17 @@
+"""
+This module defines the LATimesBrowserHandler class, which is a concrete 
+implementation of the NewsWebsiteBrowserHandler abstract base class. It is 
+used for handling browser interactions with the LA Times website using 
+Selenium. The class includes methods for opening the website, performing 
+searches, selecting the newest articles, getting article details, moving to 
+the next page of articles, and closing the browser.
+
+Classes:
+    LATimesBrowserHandler: A browser handler for scraping articles from 
+    the LA Times website.
+"""
+
+
 from datetime import datetime
 from typing import Any
 
@@ -180,9 +194,9 @@ class LATimesBrowserHandler(NewsWebsiteBrowserHandler):
             )
             self.__log('error', error_message)
             raise
-        
+
     def __get_article(
-            self, article_web_element: Any, article_number: int, 
+            self, article_web_element: Any, article_number: int,
             page_number: int) -> Article:
         """
         Get the article details from the web element.
@@ -234,7 +248,7 @@ class LATimesBrowserHandler(NewsWebsiteBrowserHandler):
             self.__log('error', error_message)
             raise
 
-    def get_articles(self, search_phrase: str, 
+    def get_articles(self, search_phrase: str,
                      page_number: int) -> SearchArticleList:
         """
         Get the articles from the LA Times website that match the search
@@ -276,7 +290,7 @@ class LATimesBrowserHandler(NewsWebsiteBrowserHandler):
             )
             self.__log('error', error_message)
             raise
-    
+
     def move_to_next_article_page(self, current_page_number: int) -> bool:
         """
         Move to the next page of articles.
@@ -345,7 +359,7 @@ class LATimesBrowserHandler(NewsWebsiteBrowserHandler):
             )
             self.__log('error', error_message)
             raise
-    
+
     def _get_handler(self) -> Selenium:
         """
         Get the Selenium handler.
@@ -354,4 +368,3 @@ class LATimesBrowserHandler(NewsWebsiteBrowserHandler):
             Selenium: The Selenium handler.
         """
         return self.__handler
-

@@ -1,3 +1,17 @@
+"""
+This module defines the NewsWebsiteBrowserService class, which is a service 
+for handling browser interactions with a news website. It uses the 
+NewsWebsiteBrowserHandlerFactory to create an appropriate browser handler 
+for the specified website URL.
+
+Classes:
+    NewsWebsiteBrowserService: A service class for handling browser 
+    interactions with a news website, including opening the website, 
+    searching for articles, selecting the newest articles, and closing the 
+    browser.
+"""
+
+
 from .news_website_browser_handler_factory import NewsWebsiteBrowserHandlerFactory
 
 class NewsWebsiteBrowserService:
@@ -16,7 +30,7 @@ class NewsWebsiteBrowserService:
         self.news_website_browser_handler = NewsWebsiteBrowserHandlerFactory.create(
             website_url
             )
-        
+
     def open_website(self) -> None:
         """
         Open the news website in a browser.

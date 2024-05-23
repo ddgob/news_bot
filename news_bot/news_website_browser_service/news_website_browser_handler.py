@@ -1,3 +1,17 @@
+"""
+This module defines the NewsWebsiteBrowserHandler abstract base class, which 
+provides an interface for handling browser interactions with a news website 
+using Selenium. The class includes methods for opening the website, 
+performing searches, selecting the newest articles, and closing the browser.
+
+Classes:
+    NewsWebsiteBrowserHandler: An abstract base class for handling browser 
+    interactions with a news website. Subclasses must implement methods for 
+    opening the website, performing searches, and selecting the newest 
+    articles.
+"""
+
+
 from abc import ABC, abstractmethod
 
 from RPA.Browser.Selenium import Selenium
@@ -21,7 +35,6 @@ class NewsWebsiteBrowserHandler(ABC):
             NotImplementedError: If the method is not implemented by a 
             subclass.
         """
-        pass
 
     @abstractmethod
     def search(self, phrase: str) -> None:
@@ -36,7 +49,6 @@ class NewsWebsiteBrowserHandler(ABC):
             NotImplementedError: If the method is not implemented by a 
             subclass.
         """
-        pass
 
     @abstractmethod
     def select_newest_articles(self) -> None:
@@ -47,7 +59,6 @@ class NewsWebsiteBrowserHandler(ABC):
             NotImplementedError: If the method is not implemented by a 
             subclass.
         """
-        pass
 
     def close_browser(self) -> None:
         """
@@ -57,7 +68,6 @@ class NewsWebsiteBrowserHandler(ABC):
             NotImplementedError: If the method is not implemented by a 
             subclass.
         """
-        pass
 
     def _get_handler(self) -> Selenium:
         """
@@ -70,4 +80,3 @@ class NewsWebsiteBrowserHandler(ABC):
             NotImplementedError: If the method is not implemented by a 
             subclass.
         """
-        pass

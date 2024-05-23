@@ -1,6 +1,19 @@
+"""
+This module contains the NewsWebsiteBrowserHandlerFactory class, which is 
+responsible for creating instances of NewsWebsiteBrowserHandler based on a 
+provided website URL. The factory determines the appropriate browser handler 
+to instantiate for the given website.
+
+Classes:
+    NewsWebsiteBrowserHandlerFactory: A factory class for creating 
+    instances of NewsWebsiteBrowserHandler based on the website URL.
+"""
+
+
 from RPA.Browser.Selenium import Selenium
 
 from .news_website_browser_handler import NewsWebsiteBrowserHandler
+from .la_times_browser_handler import LATimesBrowserHandler
 
 
 class NewsWebsiteBrowserHandlerFactory:
@@ -28,7 +41,6 @@ class NewsWebsiteBrowserHandlerFactory:
             website URL.
         """
         if website_url == 'https://www.latimes.com/':
-            from .la_times_browser_handler import LATimesBrowserHandler
             return LATimesBrowserHandler(Selenium())
         else:
             raise ValueError(

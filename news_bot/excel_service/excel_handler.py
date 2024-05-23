@@ -1,3 +1,14 @@
+"""
+This module defines the ExcelSearchArticleListService class, which is a 
+service for saving a list of search articles to an Excel file. It uses the 
+ExcelHandler to convert and save articles.
+
+Classes:
+    ExcelSearchArticleListService: A service class for saving a list of 
+    search articles to an Excel file.
+"""
+
+
 from datetime import datetime
 
 from RPA.Excel.Files import Files
@@ -20,7 +31,7 @@ class ExcelHandler:
         self.__log = Logger().log
         self.__excel = Files()
 
-    def convert_list_of_dicts_to_excel_file(self, 
+    def convert_list_of_dicts_to_excel_file(self,
                                                 list_of_dicts: list[dict],
                                                 excel_files_dir: str,
                                                 worksheet_name: str) -> None:
@@ -39,12 +50,13 @@ class ExcelHandler:
             None
 
         Raises:
-            Exception: If an error occurs while converting the list of dictionaries to an Excel file.
+            Exception: If an error occurs while converting the list of 
+            dictionaries to an Excel file.
         """
         try:
             self.__log(
                 'info', 
-                f'Converting list of dictionaries to Excel file...'
+                'Converting list of dictionaries to Excel file...'
                 )
             date_handler = DateHandler()
             now_date_string = date_handler.convert_datetime_to_string(
@@ -54,7 +66,7 @@ class ExcelHandler:
             self.__excel.create_workbook(excel_file_path, sheet_name=worksheet_name)
             header = list(list_of_dicts[0].keys())
             self.__excel.append_rows_to_worksheet([header], worksheet_name)
-            self.__excel.append_rows_to_worksheet(list_of_dicts, 
+            self.__excel.append_rows_to_worksheet(list_of_dicts,
                                                   worksheet_name
                                                   )
             self.__excel.save_workbook()
