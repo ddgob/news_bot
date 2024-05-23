@@ -62,7 +62,7 @@ class SearchArticle(Article):
         """
         return self.__search_phrase
     
-    def get_search_phrase_count(self) -> str:
+    def get_search_phrase_count(self) -> int:
         """
         Get the count of the search phrase occurrences in the article's 
         title and description.
