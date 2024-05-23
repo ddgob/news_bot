@@ -80,12 +80,16 @@ class NewsWebsiteBrowserHandler(ABC):
             subclass.
         """
 
-    def select_topic(self, topic: str) -> None:
+    def select_topic(self, topic: str) -> bool:
         """
         Select a topic on the news website.
 
         Args:
             topic (str): The topic to select.
+        
+        Returns:
+            bool: True if the topic was selected successfully, False 
+            otherwise.
 
         Raises:
             NotImplementedError: If the method is not implemented by a 

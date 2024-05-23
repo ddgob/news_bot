@@ -78,8 +78,8 @@ class NewsWebsiteBrowserService:
             The browser handler used by this service.
         """
         return self.news_website_browser_handler._get_handler()
-    
-    def select_topic(self, topic: str) -> None:
+
+    def select_topic(self, topic: str) -> bool:
         """
         Select a topic on the news website.
 
@@ -87,6 +87,7 @@ class NewsWebsiteBrowserService:
             topic (str): The topic to select.
 
         Returns:
-            None
+            bool: True if the topic was successfully selected, False 
+            otherwise.
         """
-        self.news_website_browser_handler.select_topic(topic)
+        return self.news_website_browser_handler.select_topic(topic)

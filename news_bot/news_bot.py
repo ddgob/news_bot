@@ -31,7 +31,7 @@ class NewsBot:
 
     def scrape_articles_by_date_range(self, website_url: str,
                                       search_phrase: str, start_date: str,
-                                      end_date: str, excel_files_dir: str, 
+                                      end_date: str, excel_files_dir: str,
                                       images_dir: str, topic: str) -> bool:
         """
         Scrape news articles from the website within the specified date 

@@ -227,7 +227,6 @@ class LATimesBrowserHandler(NewsWebsiteBrowserHandler):
             unconverted_date: str = self.__handler.find_element(
                 date_locator, parent=article_web_element
                 ).text
-            
             date_handler: DateHandler = DateHandler()
             date: datetime = date_handler.convert_date_to_datetime(
                 unconverted_date
@@ -422,12 +421,14 @@ class LATimesBrowserHandler(NewsWebsiteBrowserHandler):
                         checkbox, timeout=30
                         )
                     self.__log('info', f'Finished selecting topic {topic}')
+                    # Make sure the articles for that topic are visible
                     articles_section_locator: str = (
                         'class:search-results-module-results-menu'
                         )
                     self.__handler.wait_until_element_is_not_visible(
                         articles_section_locator, timeout=1
                         )
+                    # Make sure the topic is selected
                     selected_topic_locator: str = (
                         'class:search-results-module-filters-selected'
                         )
@@ -445,4 +446,4 @@ class LATimesBrowserHandler(NewsWebsiteBrowserHandler):
                 f'An error occurred while selecting topic {topic}: {e}'
             )
             self.__log('error', error_message)
-            raise 
+            raise

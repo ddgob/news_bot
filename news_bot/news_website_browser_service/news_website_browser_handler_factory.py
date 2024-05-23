@@ -45,3 +45,4 @@ class NewsWebsiteBrowserHandlerFactory:
             raise ValueError(
                 f'No browser handler available for website {website_url}'
                 )
+

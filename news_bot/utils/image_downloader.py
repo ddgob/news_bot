@@ -26,6 +26,15 @@ class ImageDownloader:
         self.__http: HTTP = HTTP()
 
     def is_image_file(self, image_name: str) -> bool:
+        """
+        Check if a file is an image based on its file extension.
+
+        Args:
+            image_name (str): The name of the file to check.
+
+        Returns:
+            bool: True if the file is an image, False otherwise.
+        """
         image_extensions = ('.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.webp')
         return image_name.lower().endswith(image_extensions)
 

@@ -39,8 +39,8 @@ class LATimesArticleScraper(NewsWebsiteArticleScraper):
                                                  browser_handler: NewsWebsiteBrowserService,
                                                  topic: str) -> SearchArticleList:
         """
-        Scrape articles from the LA Times website within the specified 
-        date range that match the search phrase.
+        Scrape articles for a given topic from the LA Times website within the 
+        specified date range that match the search phrase.
 
         Args:
             start_date (datetime): The start date for the date range.
@@ -48,6 +48,7 @@ class LATimesArticleScraper(NewsWebsiteArticleScraper):
             search_phrase (str): The phrase to search for in articles.
             browser_handler (NewsWebsiteBrowserService): The browser 
             service handler to use for scraping.
+            topic (str): The topic of the articles to search for.
 
         Returns:
             SearchArticleList: A list of articles that match the search 
