@@ -65,7 +65,7 @@ To run the bot
 
 This project was made to be highly modularized and extensible (such as adding new websites, new functionality, etc...). Below is a diagram of how the different modules interact (click the link below for better visualization)
 
-[text](https://tinyurl.com/newsbotdiagram)
+[CLick this link to visualize](https://tinyurl.com/newsbotdiagram)
 
 ## Contributing
 
