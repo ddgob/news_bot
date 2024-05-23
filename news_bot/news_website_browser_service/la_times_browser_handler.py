@@ -87,13 +87,13 @@ class LATimesBrowserHandler(NewsWebsiteBrowserHandler):
                 )
             self.__log('info', f'Searching phrase {phrase}...')
             self.__handler.click_element_when_clickable(
-                search_button_locator
+                search_button_locator, timeout=30
                 )
             self.__handler.input_text_when_element_is_visible(
                 search_input_field_locator, phrase
                 )
             self.__handler.click_element_when_clickable(
-                submit_button_locator
+                submit_button_locator, timeout=30
                 )
             self.__log('info', f'Finished searching phrase {phrase}')
         except Exception as e:
