@@ -26,6 +26,9 @@ class DateHandler:
         ),
         'month/day/4year': (
             r'^(0?[1-9]|1[0-2])\/(0?[1-9]|[12][0-9]|3[01])\/([0-9]{4})$'
+        ),
+        'empty': (
+            r''
         )
     }
 
@@ -68,6 +71,10 @@ class DateHandler:
             self.__date_regex_patterns['month/day/4year'], unconverted_date
             ):
             return 'month/day/4year', month_day_year_match
+        elif empty_match := re.search(
+            self.__date_regex_patterns['empty'], unconverted_date
+            ):
+            return 'empty', empty_match
         else:
             error_message = (
                 f'Was not able to recognize date format of date '
@@ -111,6 +118,14 @@ class DateHandler:
             year = date_match.group(3)
             date_string = f'{month}/{day}/{year}'
             return datetime.strptime(unconverted_date, '%m/%d/%Y')
+        elif date_format == 'empty':
+            warting_message = (
+                'The date for an article is empty. Therefore, returned now '
+                'date instead of the empty date'
+            )
+            self.__log('warning', warting_message)
+            print(warting_message)
+            return datetime.now()
         else:
             error_message = (
                 f'Was not able to convert date {unconverted_date} that has '
