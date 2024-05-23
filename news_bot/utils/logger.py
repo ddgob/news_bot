@@ -1,3 +1,11 @@
+"""
+This module provides a singleton Logger class for logging messages in the news bot application.
+
+The Logger class sets up a logger that writes logs to a file and captures warnings.
+It ensures that only one instance of the logger is created and provides methods for logging
+messages at various levels (debug, info, warning, error, critical).
+"""
+
 import logging
 from datetime import datetime
 import warnings
@@ -25,7 +33,14 @@ class Logger:
             cls.__instance = super(Logger, cls).__new__(cls)
             cls.__instance._initialize_logger()
         return cls.__instance
-    
+
+    def __init__(self):
+        """
+        Initialize the logger attribute if it has not been initialized yet.
+        """
+        if not hasattr(self, 'logger'):
+            self.logger = None
+
     def _initialize_logger(self):
         """
         Initialize the logger instance.
@@ -54,22 +69,19 @@ class Logger:
         warn_handler.setFormatter(warn_formatter)
         self.logger.addHandler(warn_handler)
 
-        def warn_with_logger(message, category, filename, lineno, file=None, 
-                             line=None):
+        def warn_with_logger(message, category, filename, lineno, line=None):
             """
             Log warnings with the logger.
 
             Args:
                 message: The warning message.
                 category: The category of the warning.
-                filename: The name of the file where the warning 
-                occurred.
                 lineno: The line number where the warning occurred.
                 file: The file object (default: None).
                 line: The line of code where the warning occurred 
                 (default: None).
             """
-            self.logger.warning(warnings.formatwarning(message, category, 
+            self.logger.warning(warnings.formatwarning(message, category,
                                                        filename, lineno, line))
 
         warnings.showwarning = warn_with_logger
