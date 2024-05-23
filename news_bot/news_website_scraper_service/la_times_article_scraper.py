@@ -76,7 +76,6 @@ class LATimesArticleScraper(NewsWebsiteArticleScraper):
                     return articles_within_date_range
                 if not la_times_browser_handler.move_to_next_article_page(page_number):
                     break
-                #la_times_browser_handler.select_topic(topic)
                 page_number += 1
             return articles_within_date_range
         except Exception as e:

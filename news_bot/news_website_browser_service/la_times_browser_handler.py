@@ -403,14 +403,11 @@ class LATimesBrowserHandler(NewsWebsiteBrowserHandler):
             self.__log('error', error_message)
             raise
 
-    def select_topic(self, topic: str) -> None:
+    def select_topic(self, topic: str) -> bool:
         try:
             self.__log('info', f'Selecting topic {topic}...')
             topic_web_elements: Any = self.__get_topic_web_elements()
             for topic_web_element in topic_web_elements:
-                self.__handler.wait_until_element_is_visible(
-                    topic_web_element, timeout=30
-                    )
                 topic_title = self.__handler.find_element(
                     'tag:span', parent=topic_web_element 
                     ).text.lower()
@@ -420,7 +417,7 @@ class LATimesBrowserHandler(NewsWebsiteBrowserHandler):
                         )
                     is_selected = self.__handler.is_checkbox_selected(checkbox)
                     if is_selected:
-                        return
+                        return True
                     self.__handler.click_element_when_clickable(
                         checkbox, timeout=30
                         )
@@ -437,12 +434,13 @@ class LATimesBrowserHandler(NewsWebsiteBrowserHandler):
                     self.__handler.wait_until_element_is_visible(
                         selected_topic_locator, timeout=30
                         )
-                    return
-            self.__log('error', f'Was not able to find topic {topic}')
-            raise ValueError(f'Was not able to find topic {topic}')
+                    return True
+            self.__log('warning', f'Was not able to find topic: {topic}')
+            print(f'Was not able to find topic: {topic}')
+            return False
         except Exception as e:
             if 'still visible after' in str(e):
-                return
+                return True
             error_message: str = (
                 f'An error occurred while selecting topic {topic}: {e}'
             )

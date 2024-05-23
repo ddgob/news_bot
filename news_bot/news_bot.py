@@ -76,7 +76,9 @@ class NewsBot:
             news_website_browser_service.open_website()
             news_website_browser_service.search(search_phrase)
             news_website_browser_service.select_newest_articles()
-            news_website_browser_service.select_topic(topic)
+            if not news_website_browser_service.select_topic(topic):
+                print(f'Topic {topic} not found')
+                return False
             news_website_scraper_service = NewsWebsiteScraperService(
                 website_url
             )
