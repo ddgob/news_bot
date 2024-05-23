@@ -20,8 +20,9 @@ class DateHandler:
     __date_regex_patterns = {
         'minutes ago': r'(\d+) minute(s)? ago',
         'hours ago': r'(\d+) hour(s)? ago',
-        'Short month day, year': (
-            r'(\w{3}).? (0?[1-9]|[12][0-9]|3[01]), ([0-9]{4})'
+        # Matches dates like 'January 1, 2022', 'Jan 1, 2022', 'Jan. 1, 2022'
+        'Month day, year': ( 
+            r'(\w{3})\w*.? (0?[1-9]|[12][0-9]|3[01]), ([0-9]{4})'
         ),
         'month/day/4year': (
             r'^(0?[1-9]|1[0-2])\/(0?[1-9]|[12][0-9]|3[01])\/([0-9]{4})$'
@@ -59,10 +60,10 @@ class DateHandler:
             ):
             return 'hours ago', hours_match
         elif short_month_day_year_match := re.search(
-            self.__date_regex_patterns['Short month day, year'],
+            self.__date_regex_patterns['Month day, year'],
             unconverted_date
             ):
-            return 'Short month day, year', short_month_day_year_match
+            return 'Month day, year', short_month_day_year_match
         elif month_day_year_match := re.search(
             self.__date_regex_patterns['month/day/4year'], unconverted_date
             ):
@@ -98,7 +99,7 @@ class DateHandler:
         elif date_format == 'hours ago':
             hours = int(date_match.group(1))
             return datetime.now() - timedelta(hours=hours)
-        elif date_format == 'Short month day, year':
+        elif date_format == 'Month day, year':
             short_month = date_match.group(1)
             day = date_match.group(2)
             year = date_match.group(3)

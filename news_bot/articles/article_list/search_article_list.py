@@ -92,6 +92,9 @@ class SearchArticleList(ArticleList):
             articles.
         """
         list_of_dict: list[dict] = []
+        articles: list[Article] = self._get_articles()
+        if len(articles) == 0:
+            return list_of_dict
         for article in self._get_articles():
             search_article = SearchArticle.from_article(article,
                                                         self.__search_phrase

@@ -218,7 +218,6 @@ class LATimesBrowserHandler(NewsWebsiteBrowserHandler):
             description_locator: str = 'class:promo-description'
             date_locator: str = 'class:promo-timestamp'
             image_locator: str = 'class:image'
-            # Get values
             title: str = self.__handler.find_element(
                 title_locator, parent=article_web_element
                 ).text
@@ -228,18 +227,26 @@ class LATimesBrowserHandler(NewsWebsiteBrowserHandler):
             unconverted_date: str = self.__handler.find_element(
                 date_locator, parent=article_web_element
                 ).text
-            image_src: str = self.__handler.find_element(
-                image_locator, parent=article_web_element
-                ).get_attribute('src')
-            # Convert values
+            
             date_handler: DateHandler = DateHandler()
             date: datetime = date_handler.convert_date_to_datetime(
                 unconverted_date
                 )
-            # Create article
+            image_src: str = self.__handler.find_element(
+                image_locator, parent=article_web_element
+                ).get_attribute('src')
             article = Article(title, date, description, image_src)
             return article
         except Exception as e:
+            if "Element with locator 'class:image' not found" in str(e):
+                warning_message: str = (
+                    f'Image not found for article {article_number} in page '
+                    f'{page_number}'
+                )
+                self.__log('warning', warning_message)
+                print(warning_message)
+                article = Article(title, date, description, 'Not found')
+                return article
             error_message: str = (
                 f'An error occurred while getting values for article '
                 f'{article_number} in page {page_number}: {e}'
@@ -367,3 +374,77 @@ class LATimesBrowserHandler(NewsWebsiteBrowserHandler):
             Selenium: The Selenium handler.
         """
         return self.__handler
+
+    def __get_topic_web_elements(self) -> list[Any]:
+        """
+        Get the web elements for the topics on the search results page.
+
+        Returns:
+            A list of web elements (that are the topics)
+        """
+        try:
+            topic_section_locator: str = "//*[@data-name='Topics']"
+            self.__handler.wait_until_element_is_visible(
+                topic_section_locator, timeout=30
+                )
+            topic_section_web_element: Any = self.__handler.find_element(
+                topic_section_locator
+                )
+            topic_locator: str = 'tag:li'
+            topic_section_web_elements: Any = self.__handler.find_elements(
+                topic_locator, parent=topic_section_web_element
+                )
+            return topic_section_web_elements
+        except Exception as e:
+            error_message: str = (
+                f'An error occurred when getting the web elements for the '
+                f'search topics: {e}'
+            )
+            self.__log('error', error_message)
+            raise
+
+    def select_topic(self, topic: str) -> None:
+        try:
+            self.__log('info', f'Selecting topic {topic}...')
+            topic_web_elements: Any = self.__get_topic_web_elements()
+            for topic_web_element in topic_web_elements:
+                self.__handler.wait_until_element_is_visible(
+                    topic_web_element, timeout=30
+                    )
+                topic_title = self.__handler.find_element(
+                    'tag:span', parent=topic_web_element 
+                    ).text.lower()
+                if topic_title == topic.lower():
+                    checkbox = self.__handler.find_element(
+                        'tag:input', parent=topic_web_element 
+                        )
+                    is_selected = self.__handler.is_checkbox_selected(checkbox)
+                    if is_selected:
+                        return
+                    self.__handler.click_element_when_clickable(
+                        checkbox, timeout=30
+                        )
+                    self.__log('info', f'Finished selecting topic {topic}')
+                    articles_section_locator: str = (
+                        'class:search-results-module-results-menu'
+                        )
+                    self.__handler.wait_until_element_is_not_visible(
+                        articles_section_locator, timeout=1
+                        )
+                    selected_topic_locator: str = (
+                        'class:search-results-module-filters-selected'
+                        )
+                    self.__handler.wait_until_element_is_visible(
+                        selected_topic_locator, timeout=30
+                        )
+                    return
+            self.__log('error', f'Was not able to find topic {topic}')
+            raise ValueError(f'Was not able to find topic {topic}')
+        except Exception as e:
+            if 'still visible after' in str(e):
+                return
+            error_message: str = (
+                f'An error occurred while selecting topic {topic}: {e}'
+            )
+            self.__log('error', error_message)
+            raise 

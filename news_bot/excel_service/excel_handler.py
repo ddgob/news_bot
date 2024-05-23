@@ -62,7 +62,9 @@ class ExcelHandler:
                 datetime.now(), separator='-', is_show_time=True
             )
             excel_file_path = f'{excel_files_dir}/{now_date_string}.xlsx'
-            self.__excel.create_workbook(excel_file_path, sheet_name=worksheet_name)
+            self.__excel.create_workbook(excel_file_path, 
+                                         sheet_name=worksheet_name
+                                         )
             header = list(list_of_dicts[0].keys())
             self.__excel.append_rows_to_worksheet([header], worksheet_name)
             self.__excel.append_rows_to_worksheet(list_of_dicts,

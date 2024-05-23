@@ -79,3 +79,15 @@ class NewsWebsiteBrowserHandler(ABC):
             NotImplementedError: If the method is not implemented by a 
             subclass.
         """
+
+    def select_topic(self, topic: str) -> None:
+        """
+        Select a topic on the news website.
+
+        Args:
+            topic (str): The topic to select.
+
+        Raises:
+            NotImplementedError: If the method is not implemented by a 
+            subclass.
+        """

@@ -25,7 +25,13 @@ class ImageDownloader:
         self.__log = Logger().log
         self.__http: HTTP = HTTP()
 
-    def download_image(self, image_url: str, image_path: str) -> None:
+    def is_image_file(self, image_name: str) -> bool:
+        image_extensions = ('.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.webp')
+        return image_name.lower().endswith(image_extensions)
+
+
+    def download_image(self, image_url: str, images_dir: str,
+                       image_name: str) -> None:
         """
         Download an image from the specified URL to the specified path.
 
@@ -38,7 +44,17 @@ class ImageDownloader:
             Exception: If an error occurs while downloading the image.
         """
         try:
+            if image_url == 'not found':
+                warning_message: str = (
+                    'Will not download image due to image not found'
+                )
+                self.__log('warning', warning_message)
+                print(warning_message)
+                return
             self.__log('info', f'Downloading image from {image_url}...')
+            if not self.is_image_file(image_name):
+                image_name += '.jpg'
+            image_path: str = f'{images_dir}/{image_name}'
             self.__http.download(image_url, image_path)
             self.__log('info', f'Finished downloading image from {image_url}')
         except Exception as e:
@@ -63,5 +79,4 @@ class ImageDownloader:
         for article in articles:
             image_url: str = article.get_image_url()
             image_name: str = article.get_image_file_name()
-            image_path: str = f'{images_dir}/{image_name}'
-            self.download_image(image_url, image_path)
+            self.download_image(image_url, images_dir, image_name)

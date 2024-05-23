@@ -27,8 +27,8 @@ class NewsWebsiteArticleScraper(ABC):
     def scrape_search_articles_within_date_range(self, start_date: datetime,
                                                  end_date: datetime,
                                                  search_phrase: str,
-                                                 browser_handler: NewsWebsiteBrowserService
-                                                 ) -> SearchArticleList:
+                                                 browser_handler: NewsWebsiteBrowserService,
+                                                 topic: str) -> SearchArticleList:
         """
         Scrape articles from the news website within the specified date 
         range that match the search phrase.

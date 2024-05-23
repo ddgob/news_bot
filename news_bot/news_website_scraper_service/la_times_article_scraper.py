@@ -36,8 +36,8 @@ class LATimesArticleScraper(NewsWebsiteArticleScraper):
     def scrape_search_articles_within_date_range(self, start_date: datetime,
                                                  end_date: datetime,
                                                  search_phrase: str,
-                                                 browser_handler: NewsWebsiteBrowserService
-                                                 ) -> SearchArticleList:
+                                                 browser_handler: NewsWebsiteBrowserService,
+                                                 topic: str) -> SearchArticleList:
         """
         Scrape articles from the LA Times website within the specified 
         date range that match the search phrase.
@@ -72,10 +72,11 @@ class LATimesArticleScraper(NewsWebsiteArticleScraper):
                     start_date, end_date
                     )
                 articles_within_date_range.extend(valid_articles)
-                if articles.is_all_articles_before_date(start_date):
-                    break
+                if not articles.is_all_articles_before_date(start_date):
+                    return articles_within_date_range
                 if not la_times_browser_handler.move_to_next_article_page(page_number):
                     break
+                #la_times_browser_handler.select_topic(topic)
                 page_number += 1
             return articles_within_date_range
         except Exception as e:

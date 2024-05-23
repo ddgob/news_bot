@@ -31,9 +31,8 @@ class NewsBot:
 
     def scrape_articles_by_date_range(self, website_url: str,
                                       search_phrase: str, start_date: str,
-                                      end_date: str,
-                                      excel_files_dir: str,
-                                      images_dir: str) -> bool:
+                                      end_date: str, excel_files_dir: str, 
+                                      images_dir: str, topic: str) -> bool:
         """
         Scrape news articles from the website within the specified date 
         range and save them to an Excel file and download associated 
@@ -77,27 +76,19 @@ class NewsBot:
             news_website_browser_service.open_website()
             news_website_browser_service.search(search_phrase)
             news_website_browser_service.select_newest_articles()
+            news_website_browser_service.select_topic(topic)
             news_website_scraper_service = NewsWebsiteScraperService(
                 website_url
             )
             articles = news_website_scraper_service.scrape_search_articles_within_date_range(
                 datetime_start_date, datetime_end_date, search_phrase,
-                news_website_browser_service
+                news_website_browser_service, topic
                 )
             news_website_browser_service.close_browser()
             excel_search_article_list_service = ExcelSearchArticleListService()
-            formatted_datetime_start_date = date_handler.convert_datetime_to_string(
-                datetime_start_date, separator='-'
-                )
-            formatted_datetime_end_date = date_handler.convert_datetime_to_string(
-                datetime_end_date, separator='-'
-                )
-            worksheet_name = (
-                f'{search_phrase}_{formatted_datetime_start_date}_'
-                f'{formatted_datetime_end_date}'
-            )
             excel_search_article_list_service.save_search_article_list_to_excel_file(
-                articles, excel_files_dir, worksheet_name
+                articles, excel_files_dir, search_phrase, datetime_start_date,
+                datetime_end_date, topic
                 )
             self.__log(
                 'info', 
@@ -106,7 +97,7 @@ class NewsBot:
                 f'phrase: {search_phrase}'
                 )
             image_downloader = ImageDownloader()
-            #image_downloader.download_images(articles, images_dir)
+            image_downloader.download_images(articles, images_dir)
             return True
         except Exception as e:
             self.__log(

@@ -10,6 +10,7 @@ if __name__ == '__main__':
     search_phrase = work_items.get_work_item_variable('search_phrase')
     start_date = work_items.get_work_item_variable('start_date')
     end_date = work_items.get_work_item_variable('end_date')
+    topic = work_items.get_work_item_variable('topic')
 
     config.LOG_FILE_DIR = 'output'
 
@@ -20,5 +21,6 @@ if __name__ == '__main__':
         start_date, 
         end_date, 
         'output', 
-        'output'
+        'output',
+        topic
     )
