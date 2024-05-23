@@ -1,160 +1,24 @@
-import argparse
-import os
-from datetime import datetime
+from RPA.Robocorp.WorkItems import WorkItems
 
 from news_bot import NewsBot, config
 
-def validate_date(date_str: str):
-    """
-    Validate a date string.
+if __name__ == '__main__':
 
-    Args:
-        date_str (str): The date string to validate in MM/DD/YYYY 
-        format.
+    work_items = WorkItems()
+    work_items.get_input_work_item()
 
-    Returns:
-        tuple: A tuple containing the validated date (or None if 
-        invalid) and a boolean indicating whether the date is valid.
+    search_phrase = work_items.get_work_item_variable('search_phrase')
+    start_date = work_items.get_work_item_variable('start_date')
+    end_date = work_items.get_work_item_variable('end_date')
 
-    Raises:
-        ValueError: If the date string is not in the correct format.
-    """
-    try:
-        is_valid: bool = True
-        date: datetime = datetime.strptime(date_str, "%m/%d/%Y")
-        return (date, is_valid)
-    except ValueError:
-        is_valid = False
-        print(f"Invalid date format: '{date_str}'. Use MM/DD/YYYY.")
-        return (None, is_valid)
+    config.LOG_FILE_DIR = 'output'
 
-def validate_directory(dir_str: str):
-    """
-    Validate a directory string.
-
-    Args:
-        dir_str (str): The directory path to validate.
-
-    Returns:
-        tuple: A tuple containing the directory path (or None if 
-        invalid) and a boolean indicating whether the directory is 
-        valid.
-    """
-    if not os.path.isdir(dir_str) or dir_str == '':
-        print(f"Directory does not exist: '{dir_str}'.")
-        return None, False
-    if not os.access(dir_str, os.W_OK):
-        print(f"Directory is not writable: '{dir_str}'.")
-        return None, False
-    return (dir_str, True)
-
-def prompt_for_invalid_args(args) -> None:
-    """
-    Prompt the user for any missing or invalid command-line arguments.
-
-    Args:
-        args: The command-line arguments.
-
-    Returns:
-        None
-    """
-    if args.search_phrase is None:
-        is_sure = False
-        while not is_sure:
-            args.search_phrase = input('Enter search phrase: ')
-            sure_answer = input(f"Is '{args.search_phrase}' correct? (y/n): ")
-            if sure_answer.lower() == 'y':
-                is_sure = True
-            else:
-                print("Let's try again")
-    if args.excel_dir is None or not args.excel_dir[1]:
-        is_valid = False
-        while not is_valid:
-            args.excel_dir, is_valid = validate_directory(
-                input('Enter directory where the Excel file should be '
-                      'stored: ')
-                )
-    else:
-        args.excel_dir = args.excel_dir[0]
-    if args.image_dir is None or not args.image_dir[1]:
-        is_valid = False
-        while not is_valid:
-            args.image_dir, is_valid = validate_directory(
-                input('Enter directory where the article images should be '
-                      'stored: ')
-                )
-    else:
-        args.image_dir = args.image_dir[0]
-    if args.log_dir is None or not args.log_dir[1]:
-        is_valid = False
-        while not is_valid:
-            args.log_dir, is_valid = validate_directory(
-                input('Enter directory where the log file for the program '
-                      'execution should be stored: ')
-                )
-    else:
-        args.log_dir = args.log_dir[0]
-    if args.start_date is None or not args.start_date[1]:
-        is_valid = False
-        while not is_valid:
-            args.start_date, is_valid = validate_date(
-                input('Enter start date (MM/DD/YYYY): ')
-                )
-            if not is_valid:
-                print(("Use a date in the format that the example 11/23/2024 "
-                       "uses")
-                       )
-    else:
-        args.start_date = args.start_date[0]
-    if args.end_date is None or not args.end_date[1]:
-        is_valid = False
-        while not is_valid:
-            args.end_date, is_valid = validate_date(
-                input('Enter end date (MM/DD/YYYY): ')
-                )
-            if not is_valid:
-                print(("Use a date in the format that the example 11/23/2024 "
-                       "uses")
-                       )
-    else:
-        args.end_date = args.end_date[0]
-
-def main():
-    parser = argparse.ArgumentParser(
-        description="NewsBot Command Line Arguments"
-        )
-    parser.add_argument('-s', '--search_phrase', type=str, 
-                        help='Search phrase'
-                        )
-    parser.add_argument('-e', '--excel_dir', type=validate_directory, 
-                        help='Directory for Excel files'
-                        )
-    parser.add_argument('-i', '--image_dir', type=validate_directory, 
-                        help='Directory for article images'
-                        )
-    parser.add_argument('-l', '--log_dir', type=validate_directory, 
-                        help='Directory for log files'
-                        )
-    parser.add_argument('-sd', '--start_date', type=validate_date, 
-                        help='Start date (MM/DD/YYYY)'
-                        )
-    parser.add_argument('-ed', '--end_date', type=validate_date, 
-                        help='End date (MM/DD/YYYY)'
-                        )
-    args = parser.parse_args()
-
-    prompt_for_invalid_args(args)
-
-    config.LOG_FILE_DIR = args.log_dir
     news_bot = NewsBot()
     news_bot.scrape_articles_by_date_range(
         'https://www.latimes.com/', 
-        args.search_phrase, 
-        args.start_date.strftime("%m/%d/%Y"), 
-        args.end_date.strftime("%m/%d/%Y"), 
-        args.excel_dir, 
-        args.image_dir
+        search_phrase, 
+        start_date, 
+        end_date, 
+        'output', 
+        'output'
     )
-
-if __name__ == '__main__':
-    main()
