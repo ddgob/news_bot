@@ -5,21 +5,20 @@
   - [Table of Contents](#table-of-contents)
   - [Description](#description)
   - [Features](#features)
-  - [Installation](#installation)
+  - [Setup](#setup)
   - [Usage](#usage)
-    - [Example Command](#example-command)
   - [Contributing](#contributing)
   - [License](#license)
 
 
 ## Description
 
-This is a bot that fetches news articles based on a keyword (or phrase) search and a date range, returning an excel file with article information and the downloaded images from the articles.
+This is a bot that utilizes the Robocorp framework for RPA to fetche articles from news websites based on a keyword (or phrase) search and a date range. It returns an excel file with article information and the downloaded images from the articles.
 
 ## Features
 
-- Fetches news articles from multiple sources (for now only LA Times website)
-- Allows customization of news preferences
+- Fetches news articles from multiple sources (*for now only LA Times website*)
+- Fetch is based your chosen topic
 - Fetch is based on a keywork search
 - Fetch is also based on a date range
 - Returns images that were contained in the articles
@@ -31,50 +30,35 @@ This is a bot that fetches news articles based on a keyword (or phrase) search a
   - If the article contains a mention to a monetary value in dollars (i.e. $11.1 | $111,111.11 | 11 dollars | 11 USD)
   - The name of the image that was downloaded from the article
 
-## Installation
+## Setup
 
 To install and run the news bot, follow these steps:
 
-1. Clone the repository: `git clone https://github.com/your-username/news_bot.git`
-2. Navigate to the project directory: `cd news_bot`
-3. Run the setup script: `./setup.sh`
-
-```sh
-git clone https://github.com/your-username/news_bot.git
-cd news_bot
-./setup.sh
-```
-
-OBS: make sure to give `setup.sh` permission to run. If you can't or prefer not to, make sure to use the requirements denoted in conda.yaml
+1. Log in to your Robocloud account.
+2. Navigate to Tasks
+3. Add a new task package (robot).
+4. Upload this bot's files to the task package, including the robot.yaml, conda.yaml, and all necessary Python scripts (this can also be done by adding the url of this github project)
+5. Navigate to Unattended
+6. Navigate to Processes (submenu of unattended)
+7. Add new process
+8. Go through the steps, making sure to add `Run News Bot` task to the process
+9. Finish creating the process
+10. Now, your bot will be ready to fetch articles
 
 ## Usage
 
-After running the setup script, the News Bot will be ready to fetch news articles based on the arguments you pass it. 
+To run the bot
 
-To run the bot, run:
-
-```sh
-python main.py
-```
-
-This will summon an interactive command line prompt guiding you through the bot configuration to fetch your desired articles.
-
-Another option is to use flags to pass the configuration arguments directly without having to go through the interactive command line prompt:
-
-- Use `-s` or `--search_phrase` to specify the search keyword (or phrase) the bot will use to fetch your articles
-- Use `-e` or `--excel_dir` to specify the directory where Excel files will be saved
-- Use `-i` or `--image_dir` to specify the directory where article images will be saved
-- Use `-l` or `--log_dir` to specify the directory where log files will be saved
-- Use `-sd` or `--start_date` to specify the start date (in MM/DD/YYYY format) the bot will use to fetch your articles
-- Use `-ed` or `--end_date` to specify the end date (in MM/DD/YYYY format) the bot will use to fetch your articles
-
-### Example Command
-
-To run the News Bot with all the arguments:
-
-```sh
-python main.py -s "Dollar" -e "excel_files" -i "article_images" -l "logs" -sd "05/23/2024" -ed "05/23/2024"
-```
+1. Click on the process you just created
+2. Press Run Process
+3. Select option `Run with input data`
+4. Enter the following key-value pairs:
+   - start_date: <insert_start_date>
+   - end_date: <insert_end_date>
+   - search_phrase: <insert_search_phrase>
+   - topic: <insert_news_topic>
+5. After this, your process will start to run
+6. You will find the outputs of the bot inside the artifacts folder
 
 ## Contributing
 
