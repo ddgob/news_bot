@@ -1,3 +1,12 @@
+"""
+This module provides the NewsBot class which is used to scrape news articles
+from a website based on a search phrase and date range. The scraped articles
+are saved to an Excel file and associated images are downloaded.
+
+The module imports various services and utilities to facilitate these tasks,
+including logging, date handling, and HTTP requests.
+"""
+
 from .utils import Logger
 from .news_website_browser_service import NewsWebsiteBrowserService
 from .news_website_scraper_service import NewsWebsiteScraperService
@@ -20,10 +29,10 @@ class NewsBot:
         """
         self.__log = Logger().log
 
-    def scrape_articles_by_date_range(self, website_url: str, 
-                                      search_phrase: str, start_date: str, 
-                                      end_date: str, 
-                                      excel_files_dir: str, 
+    def scrape_articles_by_date_range(self, website_url: str,
+                                      search_phrase: str, start_date: str,
+                                      end_date: str,
+                                      excel_files_dir: str,
                                       images_dir: str) -> bool:
         """
         Scrape news articles from the website within the specified date 
@@ -72,7 +81,7 @@ class NewsBot:
                 website_url
             )
             articles = news_website_scraper_service.scrape_search_articles_within_date_range(
-                datetime_start_date, datetime_end_date, search_phrase, 
+                datetime_start_date, datetime_end_date, search_phrase,
                 news_website_browser_service
                 )
             news_website_browser_service.close_browser()
@@ -104,6 +113,6 @@ class NewsBot:
                 'error', 
                 f'An error occured while scraping articles within dates '
                 f'{datetime_start_date} and {datetime_end_date} for search '
-                f'phrase: {search_phrase}'
+                f'phrase {search_phrase}: {e}'
                 )
             return False
