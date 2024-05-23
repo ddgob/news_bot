@@ -95,15 +95,18 @@ class ArticleList:
         for article in articles:
             self.append(article)
 
-    def is_all_articles_before_date(self, date: datetime) -> bool:
+    def is_an_article_before_date(self, date: datetime) -> bool:
         """
-        Check if all articles are before the specified date.
+        Check if there is an article before the specified date.
 
         Args:
             date (datetime): The date to compare against.
 
         Returns:
-            bool: True if all articles are before the specified date, 
+            bool: True if there is an article before the specified date, 
             False otherwise.
         """
-        return all(article.is_before_date(date) for article in self.__articles)
+        for article in self._get_articles():
+            if article.is_before_date(date):
+                return True
+        return False

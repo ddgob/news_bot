@@ -73,7 +73,8 @@ class LATimesArticleScraper(NewsWebsiteArticleScraper):
                     start_date, end_date
                     )
                 articles_within_date_range.extend(valid_articles)
-                if not articles.is_all_articles_before_date(start_date):
+                # If all articles are before the start date, stop scraping
+                if articles.is_an_article_before_date(start_date):
                     return articles_within_date_range
                 if not la_times_browser_handler.move_to_next_article_page(page_number):
                     break
