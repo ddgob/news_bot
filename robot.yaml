@@ -3,18 +3,6 @@ tasks:
     command:
       - python
       - main.py
-      - -s
-      - Dollar
-      - -e
-      - excel_files
-      - -i
-      - article_images
-      - -l
-      - logs
-      - -sd
-      - 05/22/2024
-      - -ed
-      - 05/22/2024
 
 condaConfigFile: conda.yaml
 
