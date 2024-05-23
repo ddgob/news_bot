@@ -139,7 +139,7 @@ class DateHandler:
         return date_obj.strftime(format_string)
     
     def first_date_earlier_than_second(self, first_date: str, 
-                                       second_date: str):
+                                       second_date: str) -> tuple[datetime, datetime]:
         """
         Ensure the first date is earlier than the second date.
 
@@ -151,14 +151,18 @@ class DateHandler:
             tuple: A tuple containing the two dates in chronological 
             order.
         """
-        first_date = self.convert_date_to_datetime(first_date)
-        second_date = self.convert_date_to_datetime(second_date)
-        if second_date < first_date:
-            first_date, second_date = second_date, first_date
-        return first_date, second_date
+        datetime_first_date: datetime = self.convert_date_to_datetime(
+            first_date
+            )
+        datetime_second_date: datetime = self.convert_date_to_datetime(
+            second_date
+            )
+        if datetime_second_date < datetime_first_date:
+            datetime_first_date, datetime_second_date = datetime_second_date, datetime_first_date
+        return datetime_first_date, datetime_second_date
 
     
-    def make_until_end_of_day(self, date: datetime):
+    def make_until_end_of_day(self, date: datetime) -> datetime:
         """
         Extend the given date to the end of the day.
 
