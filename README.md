@@ -7,6 +7,7 @@
   - [Features](#features)
   - [Setup](#setup)
   - [Usage](#usage)
+  - [Architechture](#architechture)
   - [Contributing](#contributing)
   - [License](#license)
 
@@ -59,6 +60,12 @@ To run the bot
    - topic: <insert_news_topic>
 5. After this, your process will start to run
 6. You will find the outputs of the bot inside the artifacts folder
+
+## Architechture
+
+This project was made to be highly modularized and extensible (such as adding new websites, new functionality, etc...). Below is a diagram of how the different modules interact (click the link below for better visualization)
+
+[text](https://tinyurl.com/newsbotdiagram)
 
 ## Contributing
 

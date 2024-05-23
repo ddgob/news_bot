@@ -59,6 +59,7 @@ class NewsWebsiteBrowserHandler(ABC):
             subclass.
         """
 
+    @abstractmethod
     def close_browser(self) -> None:
         """
         Close the browser.
@@ -68,6 +69,7 @@ class NewsWebsiteBrowserHandler(ABC):
             subclass.
         """
 
+    @abstractmethod
     def _get_handler(self) -> Selenium:
         """
         Get the Selenium browser handler used by this service.
@@ -80,6 +82,7 @@ class NewsWebsiteBrowserHandler(ABC):
             subclass.
         """
 
+    @abstractmethod
     def select_topic(self, topic: str) -> bool:
         """
         Select a topic on the news website.

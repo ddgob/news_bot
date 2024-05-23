@@ -121,3 +121,4 @@ class SearchArticleList(ArticleList):
                 continue
             articles_within_date_range.append(article)
         return articles_within_date_range
+ 
