@@ -1,10 +1,8 @@
 """
-This module initializes the news_bot package.
+This module initializes the news bot package.
 
-It imports the NewsBot class and defines the __all__ variable to specify
-the public interface of the package.
+It imports and exposes the LATimesNewsBot class for external use.
 """
+from .news_bot import LATimesNewsBot
 
-from .news_bot import NewsBot
-
-__all__ = ['NewsBot']
+__all__ = ['LATimesNewsBot']

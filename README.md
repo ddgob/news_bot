@@ -1,27 +1,25 @@
-# news_bot
+# rpa_news_bot
 
 ## Table of Contents
-- [news\_bot](#news_bot)
+- [rpa\_news\_bot](#rpa_news_bot)
   - [Table of Contents](#table-of-contents)
   - [Description](#description)
   - [Features](#features)
   - [Setup](#setup)
   - [Usage](#usage)
-  - [Architechture](#architechture)
-  - [Contributing](#contributing)
   - [License](#license)
 
 
 ## Description
 
-This is a bot that utilizes the Robocorp framework for RPA to fetche articles from news websites based on a keyword (or phrase) search and a date range. It returns an excel file with article information and the downloaded images from the articles.
+This is a bot that utilizes the Robocorp framework for RPA to fetch articles from news websites based on a keyword (or phrase) search, a topic of interest and a date range (number of months). It returns an excel file with article information and the downloaded images from the articles.
 
 ## Features
 
 - Fetches news articles from multiple sources (*for now only LA Times website*)
 - Fetch is based your chosen topic
 - Fetch is based on a keywork search
-- Fetch is also based on a date range
+- Fetch is also based on a number of months (how many months back the articles should be fetched for)
 - Returns images that were contained in the articles
 - Returns also an Excel file that contains article information suchas:
   - Title
@@ -54,23 +52,12 @@ To run the bot
 2. Press Run Process
 3. Select option `Run with input data`
 4. Enter the following key-value pairs:
-   - start_date: <insert_start_date>
-   - end_date: <insert_end_date>
-   - search_phrase: <insert_search_phrase>
-   - topic: <insert_news_topic>
+   - phrase: "<insert_search_phrase>"
+   - number_of_months: <insert_start_date>
+   - topic: "<insert_news_topic>"
 5. After this, your process will start to run
 6. You will find the outputs of the bot inside the artifacts folder
 
-## Architechture
-
-This project was made to be highly modularized and extensible (such as adding new websites, new functionality, etc...). Below is a diagram of how the different modules interact (click the link below for better visualization)
-
-[Click this link to visualize the diagram](https://tinyurl.com/newsbotdiagram)
-
-## Contributing
-
-Contributions are welcome! If you have any ideas or improvements for the news bot, feel free to submit a pull request. Please make sure to follow the coding conventions and include tests for any new features.
-
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+This project is licensed under the Apache License. See the [LICENSE](LICENSE) file for more details.

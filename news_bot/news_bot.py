@@ -1,111 +1,104 @@
 """
-This module provides the NewsBot class which is used to scrape news articles
-from a website based on a search phrase and date range. The scraped articles
-are saved to an Excel file and associated images are downloaded.
+This module provides classes and methods for scraping articles from the 
+LA Times website.
 
-The module imports various services and utilities to facilitate these tasks,
-including logging, date handling, and HTTP requests.
+It includes the following classes:
+- LATimesNewsBot: A bot for scraping articles within a specified date 
+                  range, search phrase and topic, saving the results to 
+                  an Excel file, and downloading associated images.
+
+The module uses the LATimesBrowser to navigate the website and retrieve 
+articles, Excel to save the results, ImageUtil to download images and 
+DateUtil for date conversions.
+
+Dependencies:
+- datetime
+- logging
+- news_bot.handlers.Excel
+- news_bot.handlers.LATimesBrowser
+- news_bot.handlers.Scraper
+- news_bot.utils.DateUtil
+- news_bot.utils.ImageUtil
+
+Usage:
+    Instantiate the LATimesNewsBot with the directory paths for Excel 
+    and images, then call the get_articles method with the search 
+    phrase, start date, end date, and topic.
 """
 
-from .utils import Logger
-from .news_website_browser_service import NewsWebsiteBrowserService
-from .news_website_scraper_service import NewsWebsiteScraperService
-from .excel_service import ExcelSearchArticleListService
-from .utils import DateHandler
-from .utils import ImageDownloader
+from datetime import datetime
+import logging
+
+from news_bot.handlers import Excel, LATimesBrowser, Scraper
+from news_bot.utils import ImageUtil
+
+logger = logging.getLogger(__name__)
+LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
 
 
-class NewsBot:
+class LATimesNewsBot:
     """
-    A bot to scrape news articles from a website based on a search 
-    phrase and date range.
+    A bot for scraping articles from the LA Times website within a 
+    specified date range, search phrase and topic, 
+    saving the results to an Excel file and downloading associated 
+    images.
+
+    This class provides run() method to perform searche on the LA Times 
+    website, scrape articles, and save the results.
+
+    Attributes:
+        __excel_dir (str): Directory to save the Excel file with 
+                           scraped articles.
+        __images_dir (str): Directory to save the downloaded images.
     """
 
-    def __init__(self) -> None:
-        """
-        Initialize the NewsBot.
+    def __init__(self, excel_dir: str, images_dir: str) -> None:
+        self.__excel_dir = excel_dir
+        self.__images_dir = images_dir
 
-        Sets up the logger for logging activities.
+    def run(self, phrase: str, start_date: datetime,
+                     end_date: datetime, topic: str) -> bool:
         """
-        self.__log = Logger().log
+        Retrieves articles from the LA Times website within a specified 
+        date range and topic.
 
-    def scrape_articles_by_date_range(self, website_url: str,
-                                      search_phrase: str, start_date: str,
-                                      end_date: str, excel_files_dir: str,
-                                      images_dir: str, topic: str) -> bool:
-        """
-        Scrape news articles from the website within the specified date 
-        range and save them to an Excel file and download associated 
-        images.
+        This method prepares the dates, opens the LA Times website, 
+        performs a search using the given phrase, selects the newest 
+        articles, and filters them by the specified topic. It then 
+        scrapes the articles within the date range, saves them to an 
+        Excel file, and downloads associated images.
 
         Args:
-            website_url (str): The URL of the news website.
-            search_phrase (str): The phrase to search for in articles.
-            start_date (str): The start date for the date range 
-            (MM/DD/YYYY).
-            end_date (str): The end date for the date range (MM/DD/YYYY).
-            excel_files_dir (str): The directory where the Excel file 
-            will be saved.
-            images_dir (str): The directory where the article images 
-            will be saved.
+            phrase (str): The search phrase to input into the search 
+                          field.
+            start_date (datetime): The start date string for the date 
+                                   range.
+            end_date (datetime): The end date string for the date range.
+            topic (str): The topic to filter articles by.
 
         Returns:
-            bool: True if the scraping and saving process was 
-                    successful, 
-                  False otherwise.
-
-        Raises:
-            Exception: If an error occurs during the scraping process.
+            bool: True if the process completes successfully, False 
+                  otherwise.
         """
-        try:
-            date_handler = DateHandler()
-            datetime_start_date, datetime_end_date = date_handler.first_date_earlier_than_second(
-                start_date, end_date
-                )
-            datetime_end_date = date_handler.make_until_end_of_day(
-                datetime_end_date
-                )
-            self.__log(
-                'info', 
-                f'Scraping articles within dates {datetime_start_date} and '
-                f'{datetime_end_date} for search phrase: {search_phrase}...'
-                )
-            news_website_browser_service = NewsWebsiteBrowserService(
-                website_url
+        logger.info('Running news bot...')
+        browser: LATimesBrowser = LATimesBrowser()
+        browser.open_website()
+        browser.search(phrase)
+        browser.select_newest_articles()
+        browser.select_topic(topic)
+        scraper = Scraper()
+        articles: list[dict] = scraper.scrape_articles_in_date_range(
+            start_date, end_date, phrase
             )
-            news_website_browser_service.open_website()
-            news_website_browser_service.search(search_phrase)
-            news_website_browser_service.select_newest_articles()
-            if not news_website_browser_service.select_topic(topic):
-                print(f'Topic {topic} not found')
-                return False
-            news_website_scraper_service = NewsWebsiteScraperService(
-                website_url
-            )
-            articles = news_website_scraper_service.scrape_search_articles_within_date_range(
-                datetime_start_date, datetime_end_date, search_phrase,
-                news_website_browser_service, topic
-                )
-            news_website_browser_service.close_browser()
-            excel_search_article_list_service = ExcelSearchArticleListService()
-            excel_search_article_list_service.save_search_article_list_to_excel_file(
-                articles, excel_files_dir, search_phrase, datetime_start_date,
-                datetime_end_date, topic
-                )
-            self.__log(
-                'info', 
-                f'Finished scraping articles within dates '
-                f'{datetime_start_date} and {datetime_end_date} for search '
-                f'phrase: {search_phrase}'
-                )
-            image_downloader = ImageDownloader()
-            image_downloader.download_images(articles, images_dir)
-            return True
-        except Exception as e:
-            self.__log(
-                'error', 
-                f'An error occured while scraping articles within dates '
-                f'{datetime_start_date} and {datetime_end_date} for search '
-                f'phrase {search_phrase}: {e}'
-                )
-            return False
+        browser.close_browser()
+        # Create list with all image sources
+        image_src_list = [article['image_src'] for article in articles]
+        # Remove 'image_src' from all articles
+        for article in articles:
+            del article['image_src']
+        excel: Excel = Excel()
+        excel.save_articles_excel(articles, self.__excel_dir)
+        image_downloader = ImageUtil()
+        image_downloader.download_images(image_src_list, self.__images_dir)
+        logger.info('Finished running news bot.')
